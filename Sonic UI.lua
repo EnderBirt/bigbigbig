@@ -400,6 +400,9 @@ if game.GameId == 3405618667 then
 			
 			['RebirthAttempt'] = game:GetService("ReplicatedStorage").Knit.Services.LevelingService.RF.AttemptRebirth;
 			['PickupCurrency'] = game:GetService("ReplicatedStorage").Knit.Services.WorldCurrencyService.RE.PickupCurrency;
+			['Step'] = game:GetService("ReplicatedStorage").Knit.Services.CharacterService.RE.UpdateCharacterState;
+			['Teleport'] = game:GetService("ReplicatedStorage").Knit.Services.ZoneService.RF.RequestTeleportToZone;
+			['CompleteObby'] = game:GetService("ReplicatedStorage").Knit.Services.ZoneService.RF.CompleteZoneObby;
 			
 		}
 		
@@ -410,6 +413,7 @@ if game.GameId == 3405618667 then
 				
 				AutoRebirth = false;
 				AutoPickup = false;
+				AutoStep = false;
 				UIKeybind = "RightAlt";
 				
 			};
@@ -419,7 +423,19 @@ if game.GameId == 3405618667 then
 		}
 		
 		local savedData = getData(FileName,Settings.CanSave)
-		Settings.CanSave = savedData
+		local newSave = savedData
+		
+		for i,v in pairs(Settings.CanSave) do
+			
+			if not newSave[i] then
+				
+				newSave[i] = v
+				
+			end
+			
+		end
+		
+		Settings.CanSave = newSave
 		
 		local newUI = UICreator:CreateUI('SonicSpeed',game.CoreGui)
 		syn.protect_gui(newUI)
@@ -432,6 +448,7 @@ if game.GameId == 3405618667 then
 		UICreator:AddLabel(newUI,AutoCateg,'Sonic Speed Auto Farm',1)
 		local AutoPickup = UICreator:AddButton(newUI,AutoCateg,'Auto Pickup',2)
 		local AutoRebirth = UICreator:AddButton(newUI,AutoCateg,'Auto Rebirth',3)
+		local AutoStep = UICreator:AddButton(newUI,AutoCateg,'Auto Step',4)
 		
 		local saveDebounce = false
 		
@@ -528,11 +545,53 @@ if game.GameId == 3405618667 then
 
 		end)
 		
+		if Settings.CanSave.AutoStep == false then
+
+			AutoStep.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+
+		else
+
+			AutoStep.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+
+		end
+
+		AutoStep.Button.MouseButton1Click:connect(function()
+
+			if not Settings.CanSave.AutoStep then
+
+				AutoStep.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+				Settings.CanSave.AutoStep = true
+
+			else
+
+				AutoStep.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+				Settings.CanSave.AutoStep = false
+
+			end
+
+		end)
+		
 		UIS.InputBegan:connect(function(Input,Proc)
 			
 			if not Proc and Input.KeyCode.Name == Settings.CanSave.UIKeybind then
 				
 				newUI.Enabled = not newUI.Enabled
+				
+			end
+			
+		end)
+		
+		task.spawn(function()
+			
+			while true do
+			
+				if Settings.CanSave.AutoStep then
+
+					Remotes.Step:FireServer({['Character'] = Player.Character; ['CFrame'] = CFrame.new(100000,100000,100000); ['IsRunning'] = true;})
+
+				end
+				
+				wait(0.5)
 				
 			end
 			
