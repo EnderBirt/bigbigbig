@@ -456,42 +456,46 @@ if game.GameId == 3405618667 then
 		local UnlockAllMaps = UICreator:AddButton(newUI,AutoCateg,'Unlock Maps',6)
 
 		local saveDebounce = false
-		
+
 		local unlocking = false
-		
+
 		function UnlockMaps()
 			
-			if unlocking then return end
+			pcall(function()
 			
-			unlocking = true
+				if unlocking then return end
 
-			Remotes.Teleport:InvokeServer("Lost Valley Obby","Green Hill Exit")
-			Remotes.LoadZone:FireServer("Lost Valley Obby")
-			Remotes.CompleteObby:InvokeServer()
-			Remotes.LoadZone:FireServer("Lost Valley")
-			Remotes.Teleport:InvokeServer("Emerald Hill Obby","Lost Valley Exit")
-			Remotes.LoadZone:FireServer("Emerald Hill Obby")
-			Remotes.CompleteObby:InvokeServer()
-			Remotes.LoadZone:FireServer("Emerald Hill")
-			Remotes.Teleport:InvokeServer("Snow Valley Obby","Emerald Hill Exit")
-			Remotes.LoadZone:FireServer("Snow Valley Obby")
-			Remotes.CompleteObby:InvokeServer()
-			Remotes.LoadZone:FireServer("Snow Valley")
-			Remotes.Teleport:InvokeServer("Hill Top Zone Obby","Snow Valley Exit")
-			Remotes.LoadZone:FireServer("Hill Top Zone Obby")
-			Remotes.CompleteObby:InvokeServer()
-			Remotes.LoadZone:FireServer("Hill Top Zone")
-			Remotes.Teleport:InvokeServer("Green Hill")
-			Remotes.LoadZone:FireServer("Green Hill")
-			
-			unlocking = false
-			
+				unlocking = true
+
+				Remotes.Teleport:InvokeServer("Lost Valley Obby","Green Hill Exit")
+				Remotes.LoadZone:FireServer("Lost Valley Obby")
+				Remotes.CompleteObby:InvokeServer()
+				Remotes.LoadZone:FireServer("Lost Valley")
+				Remotes.Teleport:InvokeServer("Emerald Hill Obby","Lost Valley Exit")
+				Remotes.LoadZone:FireServer("Emerald Hill Obby")
+				Remotes.CompleteObby:InvokeServer()
+				Remotes.LoadZone:FireServer("Emerald Hill")
+				Remotes.Teleport:InvokeServer("Snow Valley Obby","Emerald Hill Exit")
+				Remotes.LoadZone:FireServer("Snow Valley Obby")
+				Remotes.CompleteObby:InvokeServer()
+				Remotes.LoadZone:FireServer("Snow Valley")
+				Remotes.Teleport:InvokeServer("Hill Top Zone Obby","Snow Valley Exit")
+				Remotes.LoadZone:FireServer("Hill Top Zone Obby")
+				Remotes.CompleteObby:InvokeServer()
+				Remotes.LoadZone:FireServer("Hill Top Zone")
+				Remotes.Teleport:InvokeServer("Green Hill")
+				Remotes.LoadZone:FireServer("Green Hill")
+
+				unlocking = false
+				
+			end)
+
 		end
-		
+
 		UnlockAllMaps.Button.MouseButton1Click:connect(function()
-			
+
 			UnlockMaps()
-			
+
 		end)
 
 		SaveButton.Button.MouseButton1Click:connect(function()
@@ -534,7 +538,7 @@ if game.GameId == 3405618667 then
 			end
 
 		end)
-		
+
 		if Settings.AutoFarm == false then
 
 			AutoFarm.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
@@ -650,72 +654,72 @@ if game.GameId == 3405618667 then
 		end)
 
 		task.spawn(function()
-			
+
 			local farmStep = 0
 			local noStep = false
 			local AreaSteps = {
-				
+
 				"Lost Valley",
 				"Emerald Hill",
 				"Snow Valley",
 				"Hill Top Zone"
-				
+
 			}
 			local curArea = 1
 
 			while true do
-				
+
 				pcall(function()
 
 					if Settings.CanSave.AutoStep then
-						
+
 						local curCFr = Player.Character:GetPrimaryPartCFrame()
 						Remotes.Step:FireServer({['Character'] = Player.Character; ['CFrame'] = curCFr*CFrame.new(0,0,-500); ['IsRunning'] = true;})
 
 					end
-					
+
 					if Settings.AutoFarm and not noStep then
-						
+
 						if farmStep >= 6 then
-							
+
 							task.spawn(function()
-								
+
 								noStep = true
-							
+
 								local toTP = Remotes.Teleport:InvokeServer(AreaSteps[curArea])
-								
+
 								if not toTP then
-									
+
 									UnlockMaps()
-									
+
 								end
-								
+
 								Remotes.LoadZone:FireServer(AreaSteps[curArea])
 								wait(3)
 								Remotes.Teleport:InvokeServer("Green Hill")
 								Remotes.LoadZone:FireServer("Green Hill")
-								
+
 								noStep = false
 								curArea += 1
-								
+
 								if curArea > #AreaSteps then
-									
+
 									curArea = 1
-									
+
 								end
-								
+
 							end)
-							
+
 							farmStep = 0
-							
+
 						else
-							
+
 							farmStep += 1
-							
+
 						end
-						
+
 					end
-					
+
 				end)
 
 				wait(0.5)
