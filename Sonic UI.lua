@@ -480,7 +480,7 @@ if game.GameId == 3405618667 then
 			Remotes.Teleport:InvokeServer("Hill Top Zone Obby","Snow Valley Exit")
 			Remotes.LoadZone:FireServer("Hill Top Zone Obby")
 			Remotes.CompleteObby:InvokeServer()
-			Remotes.LoadZone:FireServer("Hill Top")
+			Remotes.LoadZone:FireServer("Hill Top Zone")
 			Remotes.Teleport:InvokeServer("Green Hill")
 			Remotes.LoadZone:FireServer("Green Hill")
 			
@@ -658,7 +658,7 @@ if game.GameId == 3405618667 then
 				"Lost Valley",
 				"Emerald Hill",
 				"Snow Valley",
-				"Hill Top"
+				"Hill Top Zone"
 				
 			}
 			local curArea = 1
