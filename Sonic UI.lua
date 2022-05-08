@@ -4,7 +4,7 @@ repeat wait() until game:IsLoaded()
 
 local Player = game.Players.LocalPlayer
 local UICreator = {}
-	
+
 local IsClient = false
 local UIS = game:GetService('UserInputService')
 local Http = game:GetService('HttpService')
@@ -338,108 +338,111 @@ pcall(function()
 		return Button.Repos
 
 	end
-	
+
 end)
 
 function nextInput()
-	
+
 	local Key
-	
+
 	local UISWait = UIS.InputBegan:connect(function(Input,Proc)
-		
+
 		if Input.KeyCode and Input.KeyCode ~= Enum.KeyCode.Unknown and not Proc then
-			
+
 			Key = Input.KeyCode
-			
+
 		end
-		
+
 	end)
-	
+
 	repeat wait() until Key
-	
+
 	UISWait:Disconnect()
-	
+
 	return Key
-	
+
 end
 
 function getData(FileName,Default)
-	
+
 	if not isfile(FileName) then
-		
+
 		return Default
-		
+
 	end
-	
+
 	local Decoded = Http:JSONDecode(readfile(FileName))
-	
+
 	return Decoded
-	
+
 end
 
 function saveData(FileName,ToSave)
-	
+
 	local Encoded = Http:JSONEncode(ToSave)
 	writefile(FileName,Encoded)
-	
+
 end
 
 if game.GameId == 3405618667 then
-	
+
 	if not _G.SonicLoaded then
-		
+
 		_G.SonicLoaded = true
-		
+
 		local FileName = 'SonicSpeedSimUhOhhhee.txt'
-		
+
 		local leaderstats = Player:FindFirstChild('leaderstats',true)
 		local Rebirths = leaderstats:FindFirstChild('Rebirths',true)
 		local Level = leaderstats:FindFirstChild('Level',true)
-		
+
 		local Remotes = {
-			
+
 			['RebirthAttempt'] = game:GetService("ReplicatedStorage").Knit.Services.LevelingService.RF.AttemptRebirth;
 			['PickupCurrency'] = game:GetService("ReplicatedStorage").Knit.Services.WorldCurrencyService.RE.PickupCurrency;
 			['Step'] = game:GetService("ReplicatedStorage").Knit.Services.CharacterService.RE.UpdateCharacterState;
 			['Teleport'] = game:GetService("ReplicatedStorage").Knit.Services.ZoneService.RF.RequestTeleportToZone;
 			['CompleteObby'] = game:GetService("ReplicatedStorage").Knit.Services.ZoneService.RF.CompleteZoneObby;
-			
+			['LoadZone'] = game:GetService("ReplicatedStorage").Knit.Services.ZoneService.RE.ZoneLoaded;
+			['ExitObby'] = game:GetService("ReplicatedStorage").Knit.Services.ZoneService.RF.ExitObby;
+
 		}
-		
+
 		local Settings = {
-			
+
 			CanSave = {
-				
-				
+
+
 				AutoRebirth = false;
 				AutoPickup = false;
 				AutoStep = false;
 				UIKeybind = "RightAlt";
-				
+
 			};
-			
+
 			ChangingUIKeybind = false;
-			
+			AutoFarm = false;
+
 		}
-		
+
 		local savedData = getData(FileName,Settings.CanSave)
 		local newSave = savedData
-		
+
 		for i,v in pairs(Settings.CanSave) do
-			
+
 			if not newSave[i] then
-				
+
 				newSave[i] = v
-				
+
 			end
-			
+
 		end
-		
+
 		Settings.CanSave = newSave
-		
+
 		local newUI = UICreator:CreateUI('SonicSpeed',game.CoreGui)
 		syn.protect_gui(newUI)
-		
+
 		local AutoButton,AutoCateg = UICreator:AddCategory(newUI,'Auto Farm',true,1)
 		local SettingButton,SettingCateg = UICreator:AddCategory(newUI,'Settings',false,2)
 		UICreator:AddLabel(newUI,SettingCateg,'Settings',1)
@@ -449,76 +452,141 @@ if game.GameId == 3405618667 then
 		local AutoPickup = UICreator:AddButton(newUI,AutoCateg,'Auto Pickup',2)
 		local AutoRebirth = UICreator:AddButton(newUI,AutoCateg,'Auto Rebirth',3)
 		local AutoStep = UICreator:AddButton(newUI,AutoCateg,'Auto Step',4)
-		
+		local AutoFarm = UICreator:AddButton(newUI,AutoCateg,'Auto Farm',5)
+		local UnlockAllMaps = UICreator:AddButton(newUI,AutoCateg,'Unlock Maps',6)
+
 		local saveDebounce = false
 		
-		SaveButton.Button.MouseButton1Click:connect(function()
-			
-			if saveDebounce then return end
-			saveDebounce = true
-			SaveButton.Button.TextColor3 = Color3.fromRGB(255,0,0)
-			
-			saveData(FileName,Settings.CanSave)
-			
-			wait(3)
-			
-			saveDebounce = false
-			SaveButton.Button.TextColor3 = Color3.fromRGB(255,255,255)
-			
-		end)
+		local unlocking = false
 		
-		KeybindChange.Button.Text = 'Toggle UI: '..(Settings.CanSave.UIKeybind)
-		Settings.UIKeybind = Enum.KeyCode[Settings.CanSave.UIKeybind]
-		
-		KeybindChange.Button.MouseButton1Click:connect(function()
+		function UnlockMaps()
 			
-			if not Settings.CanSave.ChangingUIKeybind then
-				
-				Settings.ChangingUIKeybind = true
-				KeybindChange.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
-				
-				local nextKey = nextInput()
-				
-				if nextKey then
-					
-					KeybindChange.Button.Text = 'Toggle UI: '..nextKey.Name
-					Settings.CanSave.UIKeybind = nextKey.Name
-					
-				end
-				
-				KeybindChange.Button.TextColor3 = Color3.fromRGB(255,255,255)
-				Settings.ChangingUIKeybind = false
-				
-			end
+			if unlocking then return end
 			
-		end)
-		
-		if Settings.CanSave.AutoPickup == false then
-		
-			AutoPickup.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+			unlocking = true
+
+			Remotes.Teleport:InvokeServer("Lost Valley Obby","Green Hill Exit")
+			Remotes.LoadZone:FireServer("Lost Valley Obby")
+			Remotes.CompleteObby:InvokeServer()
+			Remotes.LoadZone:FireServer("Lost Valley")
+			Remotes.Teleport:InvokeServer("Emerald Hill Obby","Lost Valley Exit")
+			Remotes.LoadZone:FireServer("Emerald Hill Obby")
+			Remotes.CompleteObby:InvokeServer()
+			Remotes.LoadZone:FireServer("Emerald Hill")
+			Remotes.Teleport:InvokeServer("Snow Valley Obby","Emerald Hill Exit")
+			Remotes.LoadZone:FireServer("Snow Valley Obby")
+			Remotes.CompleteObby:InvokeServer()
+			Remotes.LoadZone:FireServer("Snow Valley")
+			Remotes.Teleport:InvokeServer("Hill Top Zone Obby","Snow Valley Exit")
+			Remotes.LoadZone:FireServer("Hill Top Zone Obby")
+			Remotes.CompleteObby:InvokeServer()
+			Remotes.LoadZone:FireServer("Hill Top")
+			Remotes.Teleport:InvokeServer("Green Hill")
+			Remotes.LoadZone:FireServer("Green Hill")
 			
-		else
-			
-			AutoPickup.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+			unlocking = false
 			
 		end
 		
-		AutoPickup.Button.MouseButton1Click:connect(function()
+		UnlockAllMaps.Button.MouseButton1Click:connect(function()
 			
-			if not Settings.CanSave.AutoPickup then
-				
-				AutoPickup.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
-				Settings.CanSave.AutoPickup = true
-				
-			else
-				
-				AutoPickup.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
-				Settings.CanSave.AutoPickup = false
-				
-			end
+			UnlockMaps()
 			
 		end)
+
+		SaveButton.Button.MouseButton1Click:connect(function()
+
+			if saveDebounce then return end
+			saveDebounce = true
+			SaveButton.Button.TextColor3 = Color3.fromRGB(255,0,0)
+
+			saveData(FileName,Settings.CanSave)
+
+			wait(3)
+
+			saveDebounce = false
+			SaveButton.Button.TextColor3 = Color3.fromRGB(255,255,255)
+
+		end)
+
+		KeybindChange.Button.Text = 'Toggle UI: '..(Settings.CanSave.UIKeybind)
+		Settings.UIKeybind = Enum.KeyCode[Settings.CanSave.UIKeybind]
+
+		KeybindChange.Button.MouseButton1Click:connect(function()
+
+			if not Settings.CanSave.ChangingUIKeybind then
+
+				Settings.ChangingUIKeybind = true
+				KeybindChange.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+
+				local nextKey = nextInput()
+
+				if nextKey then
+
+					KeybindChange.Button.Text = 'Toggle UI: '..nextKey.Name
+					Settings.CanSave.UIKeybind = nextKey.Name
+
+				end
+
+				KeybindChange.Button.TextColor3 = Color3.fromRGB(255,255,255)
+				Settings.ChangingUIKeybind = false
+
+			end
+
+		end)
 		
+		if Settings.AutoFarm == false then
+
+			AutoFarm.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+
+		else
+
+			AutoFarm.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+
+		end
+
+		AutoFarm.Button.MouseButton1Click:connect(function()
+
+			if not Settings.AutoFarm then
+
+				AutoFarm.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+				Settings.AutoFarm = true
+
+			else
+
+				AutoFarm.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+				Settings.AutoFarm = false
+
+			end
+
+		end)
+
+		if Settings.CanSave.AutoPickup == false then
+
+			AutoPickup.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+
+		else
+
+			AutoPickup.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+
+		end
+
+		AutoPickup.Button.MouseButton1Click:connect(function()
+
+			if not Settings.CanSave.AutoPickup then
+
+				AutoPickup.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+				Settings.CanSave.AutoPickup = true
+
+			else
+
+				AutoPickup.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+				Settings.CanSave.AutoPickup = false
+
+			end
+
+		end)
+
 		if Settings.CanSave.AutoRebirth == false then
 
 			AutoRebirth.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
@@ -528,7 +596,7 @@ if game.GameId == 3405618667 then
 			AutoRebirth.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
 
 		end
-		
+
 		AutoRebirth.Button.MouseButton1Click:connect(function()
 
 			if not Settings.CanSave.AutoRebirth then
@@ -544,7 +612,7 @@ if game.GameId == 3405618667 then
 			end
 
 		end)
-		
+
 		if Settings.CanSave.AutoStep == false then
 
 			AutoStep.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
@@ -570,37 +638,96 @@ if game.GameId == 3405618667 then
 			end
 
 		end)
-		
+
 		UIS.InputBegan:connect(function(Input,Proc)
-			
+
 			if not Proc and Input.KeyCode.Name == Settings.CanSave.UIKeybind then
-				
+
 				newUI.Enabled = not newUI.Enabled
-				
+
 			end
-			
+
 		end)
-		
+
 		task.spawn(function()
 			
+			local farmStep = 0
+			local noStep = false
+			local AreaSteps = {
+				
+				"Lost Valley",
+				"Emerald Hill",
+				"Snow Valley",
+				"Hill Top"
+				
+			}
+			local curArea = 1
+
 			while true do
-			
-				if Settings.CanSave.AutoStep then
-
-					Remotes.Step:FireServer({['Character'] = Player.Character; ['CFrame'] = CFrame.new(100000,100000,100000); ['IsRunning'] = true;})
-
-				end
 				
+				pcall(function()
+
+					if Settings.CanSave.AutoStep then
+						
+						local curCFr = Player.Character:GetPrimaryPartCFrame()
+						Remotes.Step:FireServer({['Character'] = Player.Character; ['CFrame'] = curCFr*CFrame.new(0,0,-500); ['IsRunning'] = true;})
+
+					end
+					
+					if Settings.AutoFarm and not noStep then
+						
+						if farmStep >= 6 then
+							
+							task.spawn(function()
+								
+								noStep = true
+							
+								local toTP = Remotes.Teleport:InvokeServer(AreaSteps[curArea])
+								
+								if not toTP then
+									
+									UnlockMaps()
+									
+								end
+								
+								Remotes.LoadZone:FireServer(AreaSteps[curArea])
+								wait(3)
+								Remotes.Teleport:InvokeServer("Green Hill")
+								Remotes.LoadZone:FireServer("Green Hill")
+								
+								noStep = false
+								curArea += 1
+								
+								if curArea > #AreaSteps then
+									
+									curArea = 1
+									
+								end
+								
+							end)
+							
+							farmStep = 0
+							
+						else
+							
+							farmStep += 1
+							
+						end
+						
+					end
+					
+				end)
+
 				wait(0.5)
-				
+
 			end
-			
+
 		end)
-		
+
 		while true do
-			
+
 			if Settings.CanSave.AutoPickup then
-				
+
 				for i,v in pairs(game.Workspace.Map.Objects:GetChildren()) do
 
 					if v:IsA('Model') and v:FindFirstChild('base') then
@@ -613,23 +740,23 @@ if game.GameId == 3405618667 then
 					end
 
 				end
-				
+
 			end
-			
+
 			if Settings.CanSave.AutoRebirth then
-				
+
 				if (50+(25*Rebirths.Value)-Level.Value) <= 0 then
-					
+
 					Remotes['RebirthAttempt']:InvokeServer()
-					
+
 				end
-				
+
 			end
-			
+
 			game:GetService('RunService').RenderStepped:Wait()
-			
+
 		end
-		
+
 	end
-	
+
 end
