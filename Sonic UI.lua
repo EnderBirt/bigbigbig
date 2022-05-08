@@ -460,13 +460,12 @@ if game.GameId == 3405618667 then
 		local unlocking = false
 
 		function UnlockMaps()
+			if unlocking then return end
+
+			unlocking = true
 			
 			pcall(function()
-			
-				if unlocking then return end
-
-				unlocking = true
-
+				
 				Remotes.Teleport:InvokeServer("Lost Valley Obby","Green Hill Exit")
 				Remotes.LoadZone:FireServer("Lost Valley Obby")
 				Remotes.CompleteObby:InvokeServer()
@@ -485,10 +484,10 @@ if game.GameId == 3405618667 then
 				Remotes.LoadZone:FireServer("Hill Top Zone")
 				Remotes.Teleport:InvokeServer("Green Hill")
 				Remotes.LoadZone:FireServer("Green Hill")
-
-				unlocking = false
 				
 			end)
+			
+			unlocking = false
 
 		end
 
