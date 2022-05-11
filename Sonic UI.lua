@@ -674,17 +674,17 @@ if game.GameId == 2671916716 then
 
 		end
 
-		ExoticBut.Button.MouseButton1Click:connect(function()
+		RareBut.Button.MouseButton1Click:connect(function()
 
-			if not Settings.CanSave.AutoSpin.Exotic then
+			if not Settings.CanSave.AutoSpin.Rare then
 
-				ExoticBut.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
-				Settings.CanSave.AutoSpin.Exotic = true
+				RareBut.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+				Settings.CanSave.AutoSpin.Rare = true
 
 			else
 
-				ExoticBut.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
-				Settings.CanSave.AutoSpin.Exotic = false
+				RareBut.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+				Settings.CanSave.AutoSpin.Rare = false
 
 			end
 
@@ -700,22 +700,6 @@ if game.GameId == 2671916716 then
 
 		end
 
-		ExoticBut.Button.MouseButton1Click:connect(function()
-
-			if not Settings.CanSave.AutoSpin.Exotic then
-
-				ExoticBut.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
-				Settings.CanSave.AutoSpin.Exotic = true
-
-			else
-
-				ExoticBut.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
-				Settings.CanSave.AutoSpin.Exotic = false
-
-			end
-
-		end)
-		
 		ExoticBut.Button.MouseButton1Click:connect(function()
 
 			if not Settings.CanSave.AutoSpin.Exotic then
