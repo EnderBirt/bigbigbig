@@ -8,6 +8,7 @@ local UICreator = {}
 local IsClient = false
 local UIS = game:GetService('UserInputService')
 local Http = game:GetService('HttpService')
+local NotificationCount = 0
 
 local suc,er = pcall(function()
 
@@ -126,6 +127,12 @@ pcall(function()
 		local Label = Instance.new("TextLabel")
 		local CategoryFrame = Instance.new("ScrollingFrame")
 		local UIListLayout_2 = Instance.new("UIListLayout")
+		local Notifications = Instance.new("Frame")
+		local UIListLayout_3 = Instance.new("UIListLayout")
+		local NotificationSample = Instance.new("Frame")
+		local Background = Instance.new("Frame")
+		local Notification = Instance.new("TextLabel")
+		local Button_3 = Instance.new("TextButton")
 
 		--Properties:
 
@@ -256,6 +263,56 @@ pcall(function()
 		UIListLayout_2.Parent = CategoryFrame
 		UIListLayout_2.SortOrder = Enum.SortOrder.LayoutOrder
 
+		Notifications.Name = "Notifications"
+		Notifications.Parent = PlaceHolderUI
+		Notifications.BackgroundColor3 = Color3.fromRGB(47, 47, 47)
+		Notifications.BackgroundTransparency = 1.000
+		Notifications.Size = UDim2.new(0.25, 0, 0.0299999993, 0)
+
+		UIListLayout_3.Parent = Notifications
+		UIListLayout_3.SortOrder = Enum.SortOrder.LayoutOrder
+
+		NotificationSample.Name = "NotificationSample"
+		NotificationSample.Parent = PlaceHolderUI
+		NotificationSample.BackgroundColor3 = Color3.fromRGB(47, 47, 47)
+		NotificationSample.BackgroundTransparency = 1.000
+		NotificationSample.BorderSizePixel = 0
+		NotificationSample.Size = UDim2.new(1, 0, 1, 0)
+		NotificationSample.Visible = false
+
+		Background.Name = "Background"
+		Background.Parent = NotificationSample
+		Background.BackgroundColor3 = Color3.fromRGB(47, 47, 47)
+		Background.BorderSizePixel = 0
+		Background.Position = UDim2.new(0.0500000007, 0, 0.0500000007, 0)
+		Background.Size = UDim2.new(0.899999976, 0, 0.899999976, 0)
+
+		Notification.Name = "Notification"
+		Notification.Parent = Background
+		Notification.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		Notification.BackgroundTransparency = 1.000
+		Notification.Size = UDim2.new(0.800000012, 0, 1, 0)
+		Notification.Font = Enum.Font.SourceSans
+		Notification.Text = "You failed to get your mother"
+		Notification.TextColor3 = Color3.fromRGB(255, 255, 255)
+		Notification.TextScaled = true
+		Notification.TextSize = 14.000
+		Notification.TextWrapped = true
+		Notification.TextXAlignment = Enum.TextXAlignment.Left
+
+		Button_3.Name = "Button"
+		Button_3.Parent = Background
+		Button_3.BackgroundColor3 = Color3.fromRGB(0, 31, 95)
+		Button_3.BorderSizePixel = 0
+		Button_3.Position = UDim2.new(0.800000012, 0, 0, 0)
+		Button_3.Size = UDim2.new(0.200000003, 0, 1, 0)
+		Button_3.Visible = false
+		Button_3.Font = Enum.Font.SourceSans
+		Button_3.TextColor3 = Color3.fromRGB(255, 255, 255)
+		Button_3.TextScaled = true
+		Button_3.TextSize = 14.000
+		Button_3.TextWrapped = true
+
 		if IsClient then
 
 			task.spawn(function()
@@ -338,6 +395,41 @@ pcall(function()
 		return Button.Repos
 
 	end
+	
+	function UICreator:Notify(UI,Text,Button,Time)
+		
+		local Notification = UI.NotificationSample:Clone()
+		Notification.Background.Notification.Text = tostring(Text)
+		
+		if Button then
+			
+			Notification.Background.Button.Visible = true
+			Notification.Background.Button.Text = tostring(Button)
+			
+		end
+		
+		Notification.Parent = UI.Notifications
+		Notification.Visible = true
+		
+		NotificationCount += 1
+		Notification.LayoutOrder = NotificationCount
+		
+		if not Time or not tonumber(Time) then Time = 10 end
+		
+		if Time then
+			
+			task.spawn(function()
+				
+				wait(Time)
+				Notification:Destroy()
+				
+			end)
+			
+		end
+		
+		return Notification.Background
+		
+	end
 
 end)
 
@@ -384,7 +476,458 @@ function saveData(FileName,ToSave)
 
 end
 
-if game.GameId == 3405618667 then
+if game.GameId == 2671916716 then
+	
+	if not _G.ElementalLoaded then
+		
+		_G.ElementalLoaded = true
+		
+		local FileName = "Elementalhahahahaha.txt"
+		
+		local Settings = {
+			
+			CanSave = {
+				
+				AutoSpin = {
+					
+					Common = false;
+					Uncommon = false;
+					Rare = false;
+					Legendary = false;
+					Exotic = false;
+					Heavenly = false;
+					
+				};
+				
+				CurseTeleport = false;
+				UIKeybind = "RightAlt";
+				
+			};
+			
+			ChangingUIKeybind = false;
+			AutoSpinning = false;
+			
+		}
+		
+		local savedData = getData(FileName,Settings.CanSave)
+		local newSave = savedData
+
+		for i,v in pairs(Settings.CanSave) do
+
+			if not newSave[i] then
+
+				newSave[i] = v
+
+			end
+
+		end
+
+		Settings.CanSave = newSave
+		
+		local newUI = UICreator:CreateUI('Elementhehe',game.CoreGui)
+		syn.protect_gui(newUI)
+		
+		local AutoButton,AutoCat = UICreator:AddCategory(newUI,'Auto Spin',true,1)
+		local SettingButton,SettingCateg = UICreator:AddCategory(newUI,'Settings',false,2)
+		UICreator:AddLabel(newUI,SettingCateg,'Settings',1)
+		local CommonBut = UICreator:AddButton(newUI,AutoCat,'Common',2)
+		local UncommonBut = UICreator:AddButton(newUI,AutoCat,'Uncommon',3)
+		local RareBut = UICreator:AddButton(newUI,AutoCat,'Rare',4)
+		local LegendaryBut = UICreator:AddButton(newUI,AutoCat,'Legendary',6)
+		local ExoticBut = UICreator:AddButton(newUI,AutoCat,'Exotic',5)
+		local HeavenlyBut = UICreator:AddButton(newUI,AutoCat,'Heavenly',7)
+		local ElementLabel = UICreator:AddLabel(newUI,AutoCat,'???',8)
+		local SpinToggle = UICreator:AddButton(newUI,AutoCat,'Auto Spin',9)
+		local CurseNoti = UICreator:AddButton(newUI,SettingCateg,'Curse Notify',2)
+		local KeybindChange = UICreator:AddButton(newUI,SettingCateg,'Toggle UI: ???',3)
+		local SaveButton = UICreator:AddButton(newUI,SettingCateg,'Save Settings',4)
+		UICreator:AddLabel(newUI,AutoCat,'Auto Spin',1)
+		
+		local saveDebounce = false
+		
+		SaveButton.Button.MouseButton1Click:connect(function()
+
+			if saveDebounce then return end
+			saveDebounce = true
+			SaveButton.Button.TextColor3 = Color3.fromRGB(255,0,0)
+
+			saveData(FileName,Settings.CanSave)
+
+			wait(3)
+
+			saveDebounce = false
+			SaveButton.Button.TextColor3 = Color3.fromRGB(255,255,255)
+
+		end)
+		
+		KeybindChange.Button.Text = 'Toggle UI: '..(Settings.CanSave.UIKeybind)
+		Settings.UIKeybind = Enum.KeyCode[Settings.CanSave.UIKeybind]
+
+		KeybindChange.Button.MouseButton1Click:connect(function()
+
+			if not Settings.CanSave.ChangingUIKeybind then
+
+				Settings.ChangingUIKeybind = true
+				KeybindChange.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+
+				local nextKey = nextInput()
+
+				if nextKey then
+
+					KeybindChange.Button.Text = 'Toggle UI: '..nextKey.Name
+					Settings.CanSave.UIKeybind = nextKey.Name
+
+				end
+
+				KeybindChange.Button.TextColor3 = Color3.fromRGB(255,255,255)
+				Settings.ChangingUIKeybind = false
+
+			end
+
+		end)
+		
+		if Settings.CanSave.CurseTeleport == false then
+
+			CurseNoti.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+
+		else
+
+			CurseNoti.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+
+		end
+
+		CurseNoti.Button.MouseButton1Click:connect(function()
+
+			if not Settings.CanSave.CurseTeleport then
+
+				CurseNoti.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+				Settings.CanSave.CurseTeleport = true
+
+			else
+
+				CurseNoti.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+				Settings.CanSave.CurseTeleport = false
+
+			end
+
+		end)
+		
+		if Settings.CanSave.AutoSpin.Common == false then
+
+			CommonBut.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+
+		else
+
+			CommonBut.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+
+		end
+
+		CommonBut.Button.MouseButton1Click:connect(function()
+
+			if not Settings.CanSave.AutoSpin.Common then
+
+				CommonBut.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+				Settings.CanSave.AutoSpin.Common = true
+
+			else
+
+				CommonBut.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+				Settings.CanSave.AutoSpin.Common = false
+
+			end
+
+		end)
+		
+		if Settings.CanSave.AutoSpin.Uncommon == false then
+
+			UncommonBut.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+
+		else
+
+			UncommonBut.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+
+		end
+
+		UncommonBut.Button.MouseButton1Click:connect(function()
+
+			if not Settings.CanSave.AutoSpin.Uncommon then
+
+				UncommonBut.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+				Settings.CanSave.AutoSpin.Uncommon = true
+
+			else
+
+				UncommonBut.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+				Settings.CanSave.AutoSpin.Uncommon = false
+
+			end
+
+		end)
+		
+		if Settings.CanSave.AutoSpin.Rare == false then
+
+			RareBut.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+
+		else
+
+			RareBut.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+
+		end
+
+		ExoticBut.Button.MouseButton1Click:connect(function()
+
+			if not Settings.CanSave.AutoSpin.Exotic then
+
+				ExoticBut.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+				Settings.CanSave.AutoSpin.Exotic = true
+
+			else
+
+				ExoticBut.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+				Settings.CanSave.AutoSpin.Exotic = false
+
+			end
+
+		end)
+		
+		if Settings.CanSave.AutoSpin.Exotic == false then
+
+			ExoticBut.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+
+		else
+
+			ExoticBut.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+
+		end
+
+		ExoticBut.Button.MouseButton1Click:connect(function()
+
+			if not Settings.CanSave.AutoSpin.Exotic then
+
+				ExoticBut.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+				Settings.CanSave.AutoSpin.Exotic = true
+
+			else
+
+				ExoticBut.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+				Settings.CanSave.AutoSpin.Exotic = false
+
+			end
+
+		end)
+		
+		ExoticBut.Button.MouseButton1Click:connect(function()
+
+			if not Settings.CanSave.AutoSpin.Exotic then
+
+				ExoticBut.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+				Settings.CanSave.AutoSpin.Exotic = true
+
+			else
+
+				ExoticBut.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+				Settings.CanSave.AutoSpin.Exotic = false
+
+			end
+
+		end)
+
+		if Settings.CanSave.AutoSpin.Legendary == false then
+
+			LegendaryBut.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+
+		else
+
+			LegendaryBut.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+
+		end
+
+		LegendaryBut.Button.MouseButton1Click:connect(function()
+
+			if not Settings.CanSave.AutoSpin.Legendary then
+
+				LegendaryBut.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+				Settings.CanSave.AutoSpin.Legendary = true
+
+			else
+
+				LegendaryBut.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+				Settings.CanSave.AutoSpin.Legendary = false
+
+			end
+
+		end)
+		
+		if Settings.CanSave.AutoSpin.Heavenly == false then
+
+			HeavenlyBut.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+
+		else
+
+			HeavenlyBut.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+
+		end
+
+		HeavenlyBut.Button.MouseButton1Click:connect(function()
+
+			if not Settings.CanSave.AutoSpin.Heavenly then
+
+				HeavenlyBut.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+				Settings.CanSave.AutoSpin.Heavenly = true
+
+			else
+
+				HeavenlyBut.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+				Settings.CanSave.AutoSpin.Heavenly = false
+
+			end
+
+		end)
+		
+		if Settings.AutoSpinning == false then
+
+			SpinToggle.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+
+		else
+
+			SpinToggle.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+
+		end
+
+		SpinToggle.Button.MouseButton1Click:connect(function()
+
+			if not Settings.AutoSpinning then
+
+				SpinToggle.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+				Settings.AutoSpinning = true
+
+			else
+
+				SpinToggle.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+				Settings.AutoSpinning = false
+
+			end
+
+		end)
+		
+		UIS.InputBegan:connect(function(Input,Proc)
+
+			if not Proc and Input.KeyCode.Name == Settings.CanSave.UIKeybind then
+
+				newUI.Frame.Visible = not newUI.Frame.Visible
+
+			end
+
+		end)
+		
+		function Spin()
+			
+			local Element,Rarity = game:GetService("ReplicatedStorage").Events.Spin:InvokeServer(false)
+			
+			if not Rarity or not Element then return end
+			
+			ElementLabel.Label.Text = tostring(Element)
+			
+			if not Settings.CanSave.AutoSpin[Rarity] then return end
+			
+			return true
+			
+		end
+		
+		function checkforSpin()
+			
+			local found = false
+			
+			for i,v in pairs(Settings.CanSave.AutoSpin) do
+				
+				if v == true then
+					
+					found = true
+					
+				end
+				
+			end
+			
+			return found
+			
+		end
+		
+		workspace.DescendantAdded:connect(function(Inst)
+			
+			if Settings.CanSave.CurseTeleport then
+			
+				if Inst:IsA("Model") and Inst.Name == "CurseOrb" then
+					
+					local Not = UICreator:Notify(newUI,"Curse Spawned","Teleport",25)
+					
+					Not.Button.MouseButton1Click:connect(function()
+						
+						if Inst and Inst:IsDescendantOf(workspace) and Inst.PrimaryPart then
+							
+							if Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") then
+								
+								Player.Character.HumanoidRootPart.CFrame = Inst.PrimaryPart.CFrame
+								
+							end
+							
+						end
+						
+					end)
+					
+				end
+				
+			end
+			
+		end)
+		
+		UICreator:Notify(newUI,"UI Loaded",nil,5)
+		
+		while true do
+			
+			pcall(function()
+				
+				local DataFolder = game.ReplicatedStorage.Data:FindFirstChild(Player.UserId)
+			
+				if (not checkforSpin() or not DataFolder) and Settings.AutoSpinning then
+					
+					Settings.AutoSpinning = false
+					SpinToggle.Button.TextColor3 = Color3.fromRGB(255,0,0)
+					
+				end
+				
+				if DataFolder then
+					
+					if DataFolder.Spins.Value <= 0 and Settings.AutoSpinning then
+						
+						Settings.AutoSpinning = false
+						SpinToggle.Button.TextColor3 = Color3.fromRGB(255,0,0)
+						
+					end
+					
+				end
+				
+				if Settings.AutoSpinning then
+					
+					local checkElement = Spin()
+					
+					if checkElement == true then
+						
+						Settings.AutoSpinning = false
+						SpinToggle.Button.TextColor3 = Color3.fromRGB(255,0,0)
+						
+					end
+					
+				end
+				
+			end)
+			
+			wait()
+			
+		end
+		
+	end
+
+elseif game.GameId == 3405618667 then
 
 	if not _G.SonicLoaded then
 
