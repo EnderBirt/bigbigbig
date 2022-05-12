@@ -1119,7 +1119,7 @@ if game.GameId == 2671916716 then
 
 								end
 								
-							elseif DataFolder.ME.Value <= 30 then
+							elseif DataFolder.ME.Value <= 30 or (offCD and #offCD <= 0) then
 								
 								Respawn()
 								
