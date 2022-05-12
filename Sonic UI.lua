@@ -396,7 +396,31 @@ pcall(function()
 
 	end
 	
-	function UICreator:Notify(UI,Text,Button,Time)
+	function UICreator:Notify(UI,Text,Button,Time,Sound)
+		
+		if Sound then
+			
+			if typeof(Sound) == 'number' then
+				
+				Sound = 'rbxassetid://'..Sound
+				
+			end
+			
+			if typeof(Sound) == 'string' then
+			
+				local news = Instance.new("Sound",UI)
+				news.SoundId = Sound
+				news:Play()
+				
+				news.Ended:connect(function()
+					
+					news:Destroy()
+					
+				end)
+				
+			end
+			
+		end
 		
 		local Notification = UI.NotificationSample:Clone()
 		Notification.Background.Notification.Text = tostring(Text)
@@ -500,17 +524,31 @@ if game.GameId == 2671916716 then
 				};
 				
 				CurseTeleport = false;
+				KillBricks = false;
 				UIKeybind = "RightAlt";
 				
 			};
 			
 			ChangingUIKeybind = false;
 			AutoSpinning = false;
+			SpinFarm = false;
+			LevelFarm = false;
 			
 		}
 		
 		local savedData = getData(FileName,Settings.CanSave)
 		local newSave = savedData
+		local killbrickdata = {}
+		
+		for i,v in pairs(workspace.Killbricks:GetChildren()) do
+			
+			if v:IsA("BasePart") then
+				
+				table.insert(killbrickdata,{v,v.CFrame})
+				
+			end
+			
+		end
 
 		for i,v in pairs(Settings.CanSave) do
 
@@ -528,8 +566,10 @@ if game.GameId == 2671916716 then
 		syn.protect_gui(newUI)
 		
 		local AutoButton,AutoCat = UICreator:AddCategory(newUI,'Auto Spin',true,1)
-		local SettingButton,SettingCateg = UICreator:AddCategory(newUI,'Settings',false,2)
+		local SettingButton,SettingCateg = UICreator:AddCategory(newUI,'Settings',false,3)
+		local FarmsButton,FarmsCateg = UICreator:AddCategory(newUI,"Auto Farms",false,2)
 		UICreator:AddLabel(newUI,SettingCateg,'Settings',1)
+		UICreator:AddLabel(newUI,FarmsCateg,'Auto Farms',1)
 		local CommonBut = UICreator:AddButton(newUI,AutoCat,'Common',2)
 		local UncommonBut = UICreator:AddButton(newUI,AutoCat,'Uncommon',3)
 		local RareBut = UICreator:AddButton(newUI,AutoCat,'Rare',4)
@@ -538,9 +578,12 @@ if game.GameId == 2671916716 then
 		local HeavenlyBut = UICreator:AddButton(newUI,AutoCat,'Heavenly',7)
 		local ElementLabel = UICreator:AddLabel(newUI,AutoCat,'???',8)
 		local SpinToggle = UICreator:AddButton(newUI,AutoCat,'Auto Spin',9)
+		local SpinFarmTog = UICreator:AddButton(newUI,FarmsCateg,'Spin Farm',2)
+		local LevelFarm = UICreator:AddButton(newUI,FarmsCateg,'Level Farm',3)
 		local CurseNoti = UICreator:AddButton(newUI,SettingCateg,'Curse Notify',2)
-		local KeybindChange = UICreator:AddButton(newUI,SettingCateg,'Toggle UI: ???',3)
-		local SaveButton = UICreator:AddButton(newUI,SettingCateg,'Save Settings',4)
+		local Killbrick = UICreator:AddButton(newUI,SettingCateg,'No Killbricks',3)
+		local KeybindChange = UICreator:AddButton(newUI,SettingCateg,'Toggle UI: ???',4)
+		local SaveButton = UICreator:AddButton(newUI,SettingCateg,'Save Settings',5)
 		UICreator:AddLabel(newUI,AutoCat,'Auto Spin',1)
 		
 		local saveDebounce = false
@@ -607,6 +650,32 @@ if game.GameId == 2671916716 then
 
 				CurseNoti.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
 				Settings.CanSave.CurseTeleport = false
+
+			end
+
+		end)
+		
+		if Settings.CanSave.KillBricks == false then
+
+			Killbrick.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+
+		else
+
+			Killbrick.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+
+		end
+
+		Killbrick.Button.MouseButton1Click:connect(function()
+
+			if not Settings.CanSave.KillBricks then
+
+				Killbrick.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+				Settings.CanSave.KillBricks = true
+
+			else
+
+				Killbrick.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+				Settings.CanSave.KillBricks = false
 
 			end
 
@@ -794,6 +863,86 @@ if game.GameId == 2671916716 then
 
 		end)
 		
+		if Settings.SpinFarm == false then
+
+			SpinFarmTog.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+
+		else
+
+			SpinFarmTog.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+			
+			if Settings.LevelFarm then
+
+				LevelFarm.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+				Settings.LevelFarm = false
+
+			end
+
+		end
+
+		SpinFarmTog.Button.MouseButton1Click:connect(function()
+
+			if not Settings.SpinFarm then
+
+				SpinFarmTog.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+				Settings.SpinFarm = true
+				
+				if Settings.LevelFarm then
+
+					LevelFarm.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+					Settings.LevelFarm = false
+
+				end
+
+			else
+
+				SpinFarmTog.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+				Settings.SpinFarm = false
+
+			end
+
+		end)
+		
+		if Settings.LevelFarm == false then
+
+			LevelFarm.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+
+		else
+
+			LevelFarm.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+			
+			if Settings.SpinFarm then
+				
+				SpinFarmTog.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+				Settings.SpinFarm = false
+				
+			end
+
+		end
+
+		LevelFarm.Button.MouseButton1Click:connect(function()
+
+			if not Settings.LevelFarm then
+
+				LevelFarm.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+				Settings.LevelFarm = true
+				
+				if Settings.SpinFarm then
+
+					SpinFarmTog.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+					Settings.SpinFarm = false
+
+				end
+
+			else
+
+				LevelFarm.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+				Settings.LevelFarm = false
+
+			end
+
+		end)
+		
 		UIS.InputBegan:connect(function(Input,Proc)
 
 			if not Proc and Input.KeyCode.Name == Settings.CanSave.UIKeybind then
@@ -803,6 +952,20 @@ if game.GameId == 2671916716 then
 			end
 
 		end)
+		
+		function Respawn()
+			
+			if Player.Character and Player.Character:IsDescendantOf(workspace) then
+				
+				Player.Character.Head:Destroy()
+				
+			end
+			
+			wait(0.5)
+			
+			game:GetService("ReplicatedStorage").Events.Spawn:InvokeServer()
+			
+		end
 		
 		function Spin()
 			
@@ -836,13 +999,66 @@ if game.GameId == 2671916716 then
 			
 		end
 		
+		function UseSkill(Tool)
+			
+			if Player.Character and Player.Character:IsDescendantOf(workspace) and Tool and (Tool:IsDescendantOf(Player) or Tool:IsDescendantOf(Player.Character)) then
+				
+				local Character = Player.Character
+				local Remote = game.ReplicatedStorage.Events.SpellCast
+				local CFr = Character.PrimaryPart.CFrame*CFrame.new(0,0,-10)
+				local LV = CFr.lookVector
+				
+				Remote:FireServer({Tool,CFr,LV,true})
+				
+				wait(0.5)
+				
+				Remote:FireServer({Tool,CFr})
+				
+				
+			end
+			
+		end
+		
+		function getOffCD()
+			
+			local Tools = {}
+			local StatusFolder = game.ReplicatedStorage.Statuses:FindFirstChild(Player.Name)
+			
+			for i,v in pairs(Player.Backpack:GetChildren()) do
+				
+				if v:IsA("Tool") then
+					
+					table.insert(Tools,v)
+					
+				end
+				
+			end
+			
+			if #Tools <= 0 then return Tools end
+			
+			local ToRet = {}
+			
+			for i,v in pairs(Tools) do
+				
+				if not StatusFolder:FindFirstChild(v.Name.."CD") then
+					
+					table.insert(ToRet,v)
+					
+				end
+				
+			end
+			
+			return ToRet
+			
+		end
+		
 		workspace.DescendantAdded:connect(function(Inst)
 			
 			if Settings.CanSave.CurseTeleport then
 			
 				if Inst:IsA("Model") and Inst.Name == "CurseOrb" then
 					
-					local Not = UICreator:Notify(newUI,"Curse Spawned","Teleport",25)
+					local Not = UICreator:Notify(newUI,"Curse Spawned","Teleport",25,654933978)
 					
 					Not.Button.MouseButton1Click:connect(function()
 						
@@ -864,7 +1080,137 @@ if game.GameId == 2671916716 then
 			
 		end)
 		
-		UICreator:Notify(newUI,"UI Loaded",nil,5)
+		UICreator:Notify(newUI,"UI Loaded",nil,5,654933978)
+		
+		task.spawn(function()
+			
+			while true do
+				
+				local suc,er = pcall(function()
+			
+					local DataFolder = game.ReplicatedStorage.Data:FindFirstChild(Player.UserId)
+					local Remote = game.ReplicatedStorage.Events.SpellCast
+					
+					if Settings.LevelFarm then
+						
+						if Player.Character and Player.Character:IsDescendantOf(workspace) then
+						
+							local offCD = getOffCD()
+
+							if offCD and #offCD > 0 and DataFolder.ME.Value > 30 then
+
+								for i,v in pairs(offCD) do
+
+									if DataFolder.ME.Value > 30 then
+
+										local CFr = Player.Character.PrimaryPart.CFrame*CFrame.new(0,0,-10)
+										local Dist = CFr.Position
+										local LV = CFr.lookVector
+
+										Remote:FireServer({v,Dist,LV,true})
+
+										wait(0.5)
+
+										Remote:FireServer({v,Dist})
+
+										wait(0.5)
+
+									end
+
+								end
+								
+							elseif DataFolder.ME.Value <= 30 then
+								
+								Respawn()
+								
+							end
+							
+						end
+						
+					end
+					
+					if Settings.SpinFarm and checkforSpin() then
+
+						if Player.Character and Player.Character:IsDescendantOf(workspace) then
+
+							local offCD = getOffCD()
+
+							if offCD and #offCD > 0 and DataFolder.ME.Value > 30 then
+								
+								for i,v in pairs(offCD) do
+									
+									if DataFolder.ME.Value > 30 then
+										
+										local CFr = Player.Character.PrimaryPart.CFrame*CFrame.new(0,0,-10)
+										local Dist = CFr.Position
+										local LV = CFr.lookVector
+										
+										Remote:FireServer({v,Dist,LV,true})
+										
+										wait(0.5)
+										
+										Remote:FireServer({v,Dist})
+										
+										wait(0.5)
+										
+									end
+									
+								end
+								
+							elseif offCD and #offCD <= 0 then
+								
+								if DataFolder then
+									
+									if DataFolder.Spins.Value > 0 then
+										
+										local obtained = false
+										
+										while wait() do
+											
+											if DataFolder.Spins.Value <= 0 then
+												
+												break
+												
+											end
+											
+											local receive = Spin()
+											
+											if receive then
+												
+												obtained = true
+												break
+												
+											end
+											
+										end
+										
+										if obtained then
+											
+											Settings.SpinFarm = false
+											SpinFarmTog.Button.TextColor3 = Color3.fromRGB(255,0,0)
+											UICreator:Notify(newUI,"Obtained Element",nil,5,654933978)
+											
+										end
+										
+									end
+									
+								end
+								
+								Respawn()
+								
+							end
+
+						end
+
+					end
+					
+				end)
+				
+				repeat wait() until suc or er
+				
+			end
+			
+		end)
 		
 		while true do
 			
@@ -876,6 +1222,7 @@ if game.GameId == 2671916716 then
 					
 					Settings.AutoSpinning = false
 					SpinToggle.Button.TextColor3 = Color3.fromRGB(255,0,0)
+					UICreator:Notify(newUI,"Finished Spinning",nil,5,654933978)
 					
 				end
 				
@@ -885,6 +1232,7 @@ if game.GameId == 2671916716 then
 						
 						Settings.AutoSpinning = false
 						SpinToggle.Button.TextColor3 = Color3.fromRGB(255,0,0)
+						UICreator:Notify(newUI,"Finished Spinning",nil,5,654933978)
 						
 					end
 					
@@ -898,6 +1246,40 @@ if game.GameId == 2671916716 then
 						
 						Settings.AutoSpinning = false
 						SpinToggle.Button.TextColor3 = Color3.fromRGB(255,0,0)
+						UICreator:Notify(newUI,"Finished Spinning",nil,5,654933978)
+						
+					end
+					
+				end
+				
+				if Settings.CanSave.KillBricks then
+					
+					for i,v in pairs(killbrickdata) do
+						
+						if not v[3] and v[1] then
+							
+							local newkb = v[1]:Clone()
+							newkb.Parent = workspace
+							newkb.CFrame = v[2]
+							killbrickdata[i][3] = newkb
+							v[1].Parent = game.ReplicatedStorage
+							
+						end
+						
+					end
+					
+				else
+					
+					for i,v in pairs(killbrickdata) do
+						
+						if v[3] then
+							
+							v[3]:Destroy()
+							v[3] = nil
+							v[1].Parent = workspace.Killbricks
+							v[1].CFrame = v[2]
+							
+						end
 						
 					end
 					
