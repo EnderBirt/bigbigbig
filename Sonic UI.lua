@@ -963,7 +963,7 @@ if game.GameId == 2671916716 then
 			
 			wait(0.5)
 			
-			game:GetService("ReplicatedStorage").Events.Spawn:InvokeServer()
+			game:GetService("ReplicatedStorage").Events.Spawn2:InvokeServer()
 			
 		end
 		
