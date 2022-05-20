@@ -520,6 +520,7 @@ if game.PlaceId == 6147702473 then
 			AutoPickup = false;
 			AutoKill = false;
 			AutoChest = false;
+			GodMode = false;
 			
 		}
 		
@@ -552,6 +553,8 @@ if game.PlaceId == 6147702473 then
 		local AutoChest = UICreator:AddButton(newUI,FarmsCateg,'Auto Chest',4)
 		local KillNPCs = UICreator:AddButton(newUI,ExtrasCateg,'Kill NPCs',2)
 		local KillPlayers = UICreator:AddButton(newUI,ExtrasCateg,'Kill Players',3)
+		local HealPlayers = UICreator:AddButton(newUI,ExtrasCateg,'Heal Players',4)
+		local GodMode = UICreator:AddButton(newUI,ExtrasCateg,'God Mode',5)
 		local KeybindChange = UICreator:AddButton(newUI,SettingCateg,'Toggle UI: ???',4)
 		local SaveButton = UICreator:AddButton(newUI,SettingCateg,'Save Settings',5)
 
@@ -565,15 +568,15 @@ if game.PlaceId == 6147702473 then
 				[3] = Damage,
 				[4] = 0.1,
 				[5] = Character.HumanoidRootPart.CFrame.lookVector,
-				[6] = "rbxassetid://241837157",
-				[7] = 0.005,
+				[6] = "rbxassetid://5584232281",
+				[7] = 0.015,
 				[8] = Color3.new(0,0,0),
-				[9] = "rbxassetid://3763473874",
-				[10] = 1,
-				[11] = 2
+				[9] = "rbxassetid://5182571583",
+				[10] = 0.9,
+				[11] = 0.2857142857142857
 			}
 
-			game:GetService("ReplicatedStorage").Damage:FireServer(unpack(args))
+			game:GetService("ReplicatedStorage").SNAKEMANDMG:FireServer(unpack(args))
 
 		end
 
@@ -696,6 +699,32 @@ if game.PlaceId == 6147702473 then
 
 		end)
 		
+		if Settings.GodMode == false then
+
+			GodMode.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+
+		else
+
+			GodMode.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+
+		end
+
+		GodMode.Button.MouseButton1Click:connect(function()
+
+			if not Settings.GodMode then
+
+				GodMode.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+				Settings.GodMode = true
+
+			else
+
+				GodMode.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+				Settings.GodMode = false
+
+			end
+
+		end)
+		
 		KillNPCs.Button.MouseButton1Click:connect(function()
 			
 			for i,v in pairs(workspace:GetChildren()) do
@@ -724,6 +753,22 @@ if game.PlaceId == 6147702473 then
 
 					damageCharacter(v.Character,1000000000000)
 					
+				end)
+
+			end
+
+		end)
+		
+		HealPlayers.Button.MouseButton1Click:connect(function()
+
+			for i,v in pairs(game.Players:GetPlayers()) do
+
+				if v == Player then continue end
+
+				pcall(function()
+
+					damageCharacter(v.Character,-1000000000000)
+
 				end)
 
 			end
@@ -762,6 +807,12 @@ if game.PlaceId == 6147702473 then
 
 						damageCharacter(v,50000)
 
+					end
+					
+					if Settings.GodMode then
+						
+						damageCharacter(Player.Character,-1000)
+						
 					end
 
 				end
