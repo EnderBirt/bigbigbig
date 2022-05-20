@@ -785,6 +785,26 @@ if game.PlaceId == 6147702473 then
 
 		end)
 		
+		task.spawn(function()
+			
+			while true do
+				
+				pcall(function()
+					
+					if Settings.GodMode then
+
+						damageCharacter(Player.Character,-1000)
+
+					end
+					
+				end)
+				
+				wait(1)
+				
+			end
+			
+		end)
+		
 		while true do
 			
 			pcall(function()
@@ -807,12 +827,6 @@ if game.PlaceId == 6147702473 then
 
 						damageCharacter(v,50000)
 
-					end
-					
-					if Settings.GodMode then
-						
-						damageCharacter(Player.Character,-1000)
-						
 					end
 
 				end
