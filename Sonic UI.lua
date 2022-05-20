@@ -3,6 +3,7 @@
 repeat wait() until game:IsLoaded()
 
 local Player = game.Players.LocalPlayer
+local Mouse = Player:GetMouse()
 local UICreator = {}
 
 local IsClient = false
@@ -500,7 +501,280 @@ function saveData(FileName,ToSave)
 
 end
 
-if game.GameId == 2671916716 then
+if game.PlaceId == 6147702473 then
+	
+	if not _G.LegendaryScary123 then
+		
+		_G.LegendaryScary123 = true
+		
+		local FileName = "LegendaryGameomgno.txt"
+		
+		local Settings = {
+			
+			CanSave = {
+				
+				UIKeybind = "RightAlt";
+				
+			};
+			
+			AutoPickup = false;
+			AutoKill = false;
+			AutoChest = false;
+			
+		}
+		
+		local savedData = getData(FileName,Settings.CanSave)
+		local newSave = savedData
+
+		for i,v in pairs(Settings.CanSave) do
+
+			if not newSave[i] then
+
+				newSave[i] = v
+
+			end
+
+		end
+
+		Settings.CanSave = newSave
+
+		local newUI = UICreator:CreateUI('Elementhehe',game.CoreGui)
+		syn.protect_gui(newUI)
+
+		local FarmsButton,FarmsCateg = UICreator:AddCategory(newUI,'Auto Farms',true,1)
+		local SettingButton,SettingCateg = UICreator:AddCategory(newUI,'Settings',false,3)
+		local ExtrasButton,ExtrasCateg = UICreator:AddCategory(newUI,"Extras",false,2)
+		UICreator:AddLabel(newUI,SettingCateg,'Settings',1)
+		UICreator:AddLabel(newUI,FarmsCateg,'Auto Farms',1)
+		UICreator:AddLabel(newUI,ExtrasCateg,'Extras',1)
+		local AutoPickup = UICreator:AddButton(newUI,FarmsCateg,'Auto Pickup',2)
+		local AutoKill = UICreator:AddButton(newUI,FarmsCateg,'Auto Kill',3)
+		local AutoChest = UICreator:AddButton(newUI,FarmsCateg,'Auto Chest',4)
+		local KillNPCs = UICreator:AddButton(newUI,ExtrasCateg,'Kill NPCs',2)
+		local KillPlayers = UICreator:AddButton(newUI,ExtrasCateg,'Kill Players',3)
+		local KeybindChange = UICreator:AddButton(newUI,SettingCateg,'Toggle UI: ???',4)
+		local SaveButton = UICreator:AddButton(newUI,SettingCateg,'Save Settings',5)
+
+		local saveDebounce = false
+		
+		function damageCharacter(Character,Damage)
+
+			local args = {
+				[1] = Character.Humanoid,
+				[2] = Character.HumanoidRootPart.CFrame,
+				[3] = Damage,
+				[4] = 0.1,
+				[5] = Character.HumanoidRootPart.CFrame.lookVector,
+				[6] = "rbxassetid://241837157",
+				[7] = 0.005,
+				[8] = Color3.new(0,0,0),
+				[9] = "rbxassetid://3763473874",
+				[10] = 1,
+				[11] = 2
+			}
+
+			game:GetService("ReplicatedStorage").Damage:FireServer(unpack(args))
+
+		end
+
+		SaveButton.Button.MouseButton1Click:connect(function()
+
+			if saveDebounce then return end
+			saveDebounce = true
+			SaveButton.Button.TextColor3 = Color3.fromRGB(255,0,0)
+
+			saveData(FileName,Settings.CanSave)
+
+			wait(3)
+
+			saveDebounce = false
+			SaveButton.Button.TextColor3 = Color3.fromRGB(255,255,255)
+
+		end)
+
+		KeybindChange.Button.Text = 'Toggle UI: '..(Settings.CanSave.UIKeybind)
+		Settings.UIKeybind = Enum.KeyCode[Settings.CanSave.UIKeybind]
+
+		KeybindChange.Button.MouseButton1Click:connect(function()
+
+			if not Settings.CanSave.ChangingUIKeybind then
+
+				Settings.ChangingUIKeybind = true
+				KeybindChange.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+
+				local nextKey = nextInput()
+
+				if nextKey then
+
+					KeybindChange.Button.Text = 'Toggle UI: '..nextKey.Name
+					Settings.CanSave.UIKeybind = nextKey.Name
+
+				end
+
+				KeybindChange.Button.TextColor3 = Color3.fromRGB(255,255,255)
+				Settings.ChangingUIKeybind = false
+
+			end
+
+		end)
+		
+		if Settings.AutoKill == false then
+
+			AutoKill.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+
+		else
+
+			AutoKill.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+
+		end
+
+		AutoKill.Button.MouseButton1Click:connect(function()
+
+			if not Settings.AutoKill then
+
+				AutoKill.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+				Settings.AutoKill = true
+
+			else
+
+				AutoKill.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+				Settings.AutoKill = false
+
+			end
+
+		end)
+		
+		if Settings.AutoPickup == false then
+
+			AutoPickup.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+
+		else
+
+			AutoPickup.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+
+		end
+
+		AutoPickup.Button.MouseButton1Click:connect(function()
+
+			if not Settings.AutoPickup then
+
+				AutoPickup.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+				Settings.AutoPickup = true
+
+			else
+
+				AutoPickup.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+				Settings.AutoPickup = false
+
+			end
+
+		end)
+		
+		if Settings.AutoChest == false then
+
+			AutoChest.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+
+		else
+
+			AutoChest.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+
+		end
+
+		AutoChest.Button.MouseButton1Click:connect(function()
+
+			if not Settings.AutoChest then
+
+				AutoChest.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+				Settings.AutoChest = true
+
+			else
+
+				AutoChest.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+				Settings.AutoChest = false
+
+			end
+
+		end)
+		
+		KillNPCs.Button.MouseButton1Click:connect(function()
+			
+			for i,v in pairs(workspace:GetChildren()) do
+				
+				pcall(function()
+				
+					if v:FindFirstChild('Humanoid') and not game.Players:GetPlayerFromCharacter(v) then
+						
+						damageCharacter(v,1000000000000)
+						
+					end
+					
+				end)
+				
+			end
+			
+		end)
+		
+		KillPlayers.Button.MouseButton1Click:connect(function()
+
+			for i,v in pairs(game.Players:GetPlayers()) do
+				
+				if v == Player then continue end
+				
+				pcall(function()
+
+					damageCharacter(v.Character,1000000000000)
+					
+				end)
+
+			end
+
+		end)
+		
+		UIS.InputBegan:connect(function(Input,Proc)
+
+			if not Proc and Input.KeyCode.Name == Settings.CanSave.UIKeybind then
+
+				newUI.Frame.Visible = not newUI.Frame.Visible
+
+			end
+
+		end)
+		
+		while true do
+			
+			pcall(function()
+				
+				for i,v in pairs(workspace:GetChildren()) do
+
+					if v:IsA("Tool") and v:FindFirstChild("Handle") and v.Handle.Anchored == false and Settings.AutoPickup then
+
+						firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart,v.Handle,0)
+
+					end
+
+					if v.Name == "RandomChest" and v:FindFirstChild("Chest") and Settings.AutoChest then
+
+						fireclickdetector(v.Chest.ClickDetector)
+
+					end
+
+					if v:FindFirstChild("Humanoid") and not (v.Humanoid.Health > 10000000000000000000000000) and not game.Players:GetPlayerFromCharacter(v) and Settings.AutoKill then
+
+						damageCharacter(v,50000)
+
+					end
+
+				end
+				
+			end)
+			
+			wait()
+			
+		end
+		
+	end
+
+elseif game.GameId == 2671916716 then
 	
 	if not _G.ElementalLoaded then
 		
