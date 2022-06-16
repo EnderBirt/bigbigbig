@@ -1631,23 +1631,23 @@ elseif game.GameId == 2671916716 then
 		end
 
 	end
-	
+
 elseif game.PlaceId == 258258996 then
 
 	if not shared.MinerLoaded then
 
 		shared.MinerLoaded = true
 
-		local FileName = "Elementalhahahahaha.txt"
+		local FileName = "Minerhehehhuhu.txt"
 		local Settings = {
 
 			CanSave = {
-				
+
 				AutoButton = false;
 				UIKeybind = "RightAlt";
 
 			};
-			
+
 			Active = true;
 			Macro = false;
 			Rebirth = false;
@@ -1697,7 +1697,8 @@ elseif game.PlaceId == 258258996 then
 		local SettingButton,SettingCateg = UICreator:AddCategory(newUI,'Settings',false,3)
 		UICreator:AddLabel(newUI,SettingCateg,'Settings',1)
 		local AutoButton = UICreator:AddButton(newUI,AutoCat,'Auto Press',2)
-		local MacroButton = UICreator:AddButton(newUI,AutoCat,'Private Macro',3)
+		local RebirthButton = UICreator:AddButton(newUI,AutoCat,'Auto Rebirth',3)
+		local MacroButton = UICreator:AddButton(newUI,AutoCat,'Private Macro',4)
 		local KeybindChange = UICreator:AddButton(newUI,SettingCateg,'Toggle UI: ???',2)
 		local SaveButton = UICreator:AddButton(newUI,SettingCateg,'Save Settings',3)
 		UICreator:AddLabel(newUI,AutoCat,'Automation',1)
@@ -1783,7 +1784,7 @@ elseif game.PlaceId == 258258996 then
 
 		MacroButton.Button.MouseButton1Click:connect(function()
 
-			if not Settings.CanSave.Macro then
+			if not Settings.Macro then
 
 				MacroButton.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
 				Settings.Macro = true
@@ -1792,6 +1793,32 @@ elseif game.PlaceId == 258258996 then
 
 				MacroButton.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
 				Settings.Macro = false
+
+			end
+
+		end)
+		
+		if Settings.Rebirth == false then
+
+			MacroButton.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+
+		else
+
+			MacroButton.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+
+		end
+
+		RebirthButton.Button.MouseButton1Click:connect(function()
+
+			if not Settings.Rebirth then
+
+				RebirthButton.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+				Settings.Rebirth = true
+
+			else
+
+				RebirthButton.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+				Settings.Rebirth = false
 
 			end
 
@@ -1806,7 +1833,7 @@ elseif game.PlaceId == 258258996 then
 			end
 
 		end)
-		
+
 		function Rebirth()
 
 			Settings.Active = false
@@ -1840,68 +1867,68 @@ elseif game.PlaceId == 258258996 then
 			end
 
 		end
-		
+
 		UICreator:Notify(newUI,"UI Loaded",nil,5,654933978)
 
 		task.spawn(function()
 
 			while true do
-				
+
 				pcall(function()
-				
+
 					if Settings.CanSave.AutoButton then
-						
+
 						game:GetService("ReplicatedStorage").RemoteDrop:FireServer()
-						
+
 					end
-					
+
 				end)
-				
+
 				wait(Settings.ButtonInterval)
-				
+
 			end
 
 		end)
 
 		while true do
-			
+
 			pcall(function()
-				
+
 				if not (Settings.Rebirth or Settings.Macro) or not Settings.Active then return end
-				
+
 				local CurrentCash = game.ReplicatedStorage.MoneyMirror[Player.Name].Value
 				local RebornPrice = MoneyLib.RebornPrice(Player)
-				
+
 				if Settings.Rebirth then
-					
+
 					if CurrentCash >= RebornPrice then
-						
+
 						Rebirth()
 						return
-						
+
 					end
-					
+
 				end
-				
+
 				if Settings.Macro then
-					
+
 					for i,v in pairs(Settings.Layouts) do
-						
+
 						if v.Enabled == true and v.Loaded == false and v.Price <= CurrentCash then
-							
+
 							ChangeLayout(i)
 							break
-							
+
 						end
-						
+
 					end
-					
+
 				end
-				
+
 			end)
-			
+
 			wait(0.5)
-			
+
 		end
 
 	end
