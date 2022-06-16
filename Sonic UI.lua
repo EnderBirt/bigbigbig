@@ -1800,11 +1800,11 @@ elseif game.PlaceId == 258258996 then
 		
 		if Settings.Rebirth == false then
 
-			MacroButton.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+			RebirthButton.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
 
 		else
 
-			MacroButton.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+			RebirthButton.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
 
 		end
 
