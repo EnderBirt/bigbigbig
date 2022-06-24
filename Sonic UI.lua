@@ -426,7 +426,7 @@ pcall(function()
 		return Button.Repos
 
 	end
-	
+
 	function UICreator:AddBox(UI,Category,BoxText,Layout)
 
 		local Box = UI.Frame.BoxSample:Clone()
@@ -1711,7 +1711,7 @@ elseif game.PlaceId == 258258996 then
 						Enabled = false;
 						Price = 0;
 						Loaded = false;
-						Next = "Layout3";
+						Next = nil;
 
 					};
 
@@ -1728,7 +1728,7 @@ elseif game.PlaceId == 258258996 then
 				};
 
 			};
-			
+
 			NoTP = false;
 			CrateTP = false;
 			CurrentCrate = nil;
@@ -1764,9 +1764,9 @@ elseif game.PlaceId == 258258996 then
 		UICreator:AddLabel(newUI,SettingCateg,'Settings',1)
 		UICreator:AddLabel(newUI,MacroCat,'Macro',1)
 		local LayoutButtons = {
-			
+
 			["Layout1"] = {
-				
+
 				["Label"] = UICreator:AddLabel(newUI,MacroCat,"Layout1",2);
 				["PriceBox"] = UICreator:AddBox(newUI,MacroCat,"Price",3);
 				["PriceButton"] = UICreator:AddButton(newUI,MacroCat,"Set Price: ???",4);
@@ -1775,9 +1775,9 @@ elseif game.PlaceId == 258258996 then
 				["NextBox"] = UICreator:AddBox(newUI,MacroCat,"Layout Order",7);
 				["NextButton"] = UICreator:AddButton(newUI,MacroCat,"Set Next Layout",8);
 				["Enabled"] = UICreator:AddButton(newUI,MacroCat,"Enable Layout1",9);
-				
+
 			};
-			
+
 			["Layout2"] = {
 
 				["Label"] = UICreator:AddLabel(newUI,MacroCat,"Layout2",10);
@@ -1790,7 +1790,7 @@ elseif game.PlaceId == 258258996 then
 				["Enabled"] = UICreator:AddButton(newUI,MacroCat,"Enable Layout1",17);
 
 			};
-			
+
 			["Layout3"] = {
 
 				["Label"] = UICreator:AddLabel(newUI,MacroCat,"Layout3",18);
@@ -1803,7 +1803,7 @@ elseif game.PlaceId == 258258996 then
 				["Enabled"] = UICreator:AddButton(newUI,MacroCat,"Enable Layout1",25);
 
 			};
-			
+
 		}
 		local AutoButton = UICreator:AddButton(newUI,AutoCat,'Auto Press',2)
 		local RebirthButton = UICreator:AddButton(newUI,AutoCat,'Auto Rebirth',3)
@@ -1811,6 +1811,7 @@ elseif game.PlaceId == 258258996 then
 		local CrateButton = UICreator:AddButton(newUI,AutoCat,'Crate Pickup',5)
 		local KeybindChange = UICreator:AddButton(newUI,SettingCateg,'Toggle UI: ???',2)
 		local SaveButton = UICreator:AddButton(newUI,SettingCateg,'Save Settings',3)
+		local KillButton = UICreator:AddButton(newUI,SettingCateg,"Kill Script",4)
 		UICreator:AddLabel(newUI,AutoCat,'Automation',1)
 
 		local saveDebounce = false
@@ -1907,7 +1908,7 @@ elseif game.PlaceId == 258258996 then
 			end
 
 		end)
-		
+
 		if Settings.CrateTP == false then
 
 			CrateButton.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
@@ -1960,8 +1961,16 @@ elseif game.PlaceId == 258258996 then
 
 		end)
 		
-		for i,v in pairs(LayoutButtons) do
+		KillButton.Button.MouseButton1Click:connect(function()
 			
+			if newUI then newUI:Destroy() end
+			Settings.Killed = true
+			shared.MinerLoaded = false
+			
+		end)
+
+		for i,v in pairs(LayoutButtons) do
+
 			local SavedSettings = Settings.CanSave.Layouts[i]
 			if not SavedSettings then continue end
 			Settings.CanSave.Layouts[i].Loaded = false
@@ -1980,7 +1989,7 @@ elseif game.PlaceId == 258258996 then
 				v.NextBox.Box.Text = SavedSettings.Next
 			end
 			v.Enabled.Button.MouseButton1Click:connect(function()
-				
+
 				Settings.CanSave.Layouts[i].Enabled = not Settings.CanSave.Layouts[i].Enabled
 				SavedSettings = Settings.CanSave.Layouts[i]
 				if SavedSettings.Enabled then
@@ -1990,61 +1999,61 @@ elseif game.PlaceId == 258258996 then
 					v.Enabled.Button.TextColor3 = Color3.fromRGB(0,255,0)
 					v.Enabled.Button.Text = "Enable "..i
 				end
-				
+
 			end)
 			v.PriceButton.Button.MouseButton1Click:connect(function()
-				
+
 				SavedSettings = Settings.CanSave.Layouts[i]
 				local newPrice = tonumber(v.PriceBox.Box.Text)
 				if newPrice then
-					
+
 					Settings.CanSave.Layouts[i].Price = newPrice
 					v.PriceBox.Box.Text = "Set to "..newPrice
-					
+
 				end
-				
+
 			end)
 			v.PriceBox.Box:GetPropertyChangedSignal("Text"):connect(function()
-				
+
 				local curpr = tonumber(v.PriceBox.Box.Text)
 				if curpr then
-					
+
 					local newmoney = MoneyLib.HandleMoney(curpr)
 					v.PriceButton.Button.Text = "Set Price: "..newmoney
-					
+
 				end
-				
+
 			end)
 			v.ButtonLimitButton.Button.MouseButton1Click:connect(function()
-				
+
 				SavedSettings = Settings.CanSave.Layouts[i]
 				local newamt = tonumber(v.ButtonLimitBox.Box.Text)
 				if newamt then
-					
+
 					Settings.CanSave.Layouts[i].ButtonOreLimit = newamt
 					v.ButtonLimitBox.Box.Text = "Set to "..newamt
-					
+
 				else
-					
+
 					Settings.CanSave.Layouts[i].ButtonOreLimit = nil
 					v.ButtonLimitBox.Box.Text = "Set to inf"
-					
+
 				end
-				
+
 			end)
 			v.NextButton.Button.MouseButton1Click:connect(function()
-				
+
 				SavedSettings = Settings.CanSave.Layouts[i]
 				local newlay = v.NextBox.Box.Text
 				if Settings.CanSave.Layouts[newlay] and Settings.CanSave.Layouts[newlay].Next ~= i and newlay ~= i then
-					
-					Settings.CanSave.Layouts[i] = newlay
+
+					Settings.CanSave.Layouts[i].Next = newlay
 					v.NextBox.Box.Text = "Set to "..newlay
-					
+
 				end
-				
+
 			end)
-			
+
 		end
 
 		UIS.InputBegan:connect(function(Input,Proc)
@@ -2085,9 +2094,9 @@ elseif game.PlaceId == 258258996 then
 			Settings.NoTP = true
 			returnToBase()
 			Settings.Active = false
-			for i,v in pairs(Settings.Layouts) do
-				if v['Loaded'] then
-					v.Loaded = false
+			for i,v in pairs(Settings.CanSave.Layouts) do
+				if Settings.CanSave.Layouts[i].Loaded then
+					Settings.CanSave.Layouts[i].Loaded = false
 				end
 			end
 			Settings.CurrentLoad = ""
@@ -2154,6 +2163,7 @@ elseif game.PlaceId == 258258996 then
 		task.spawn(function()
 
 			while true do
+				if Settings.Killed then break end
 
 				pcall(function()
 
@@ -2190,10 +2200,13 @@ elseif game.PlaceId == 258258996 then
 			end
 
 		end)
+		
+		local paster = {}
 
 		while true do
+			if Settings.Killed then break end
 
-			pcall(function()
+			local suc,er = pcall(function()
 
 				if not Settings.Active then return end
 
@@ -2272,11 +2285,13 @@ elseif game.PlaceId == 258258996 then
 				end
 
 			end)
+			
+			if not suc and not table.find(paster,er) then warn(er) end
 
 			wait(0.5)
 
 		end
 
 	end
-	
+
 end
