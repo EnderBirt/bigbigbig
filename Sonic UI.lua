@@ -300,14 +300,14 @@ pcall(function()
 		Button_3.TextScaled = true
 		Button_3.TextSize = 14.000
 		Button_3.TextWrapped = true
-		
+
 		if IsClient then
 			task.spawn(function()
 				newDrag(PlaceHolderUI.Frame)
 			end)
 		end
 		return PlaceHolderUI
-		
+
 	end
 
 	function UICreator:AddCategory(UI,CategoryName,IsOpen,Layout)
@@ -330,7 +330,7 @@ pcall(function()
 			setVisible(CategoryFrame,UI.Frame.CategoryFrames)
 		end)
 		return Category.Repos,CategoryFrame
-		
+
 	end
 
 	function UICreator:AddLabel(UI,Category,LabelText,Layout)
@@ -358,7 +358,7 @@ pcall(function()
 			Button.LayoutOrder = Layout
 		end
 		return Button.Repos
-		
+
 	end
 
 	function UICreator:AddBox(UI,Category,BoxText,Layout)
@@ -403,7 +403,7 @@ pcall(function()
 		Notification.Visible = true
 		NotificationCount += 1
 		Notification.LayoutOrder = NotificationCount
-		
+
 		if not Time or not tonumber(Time) then Time = 10 end
 		if Time then
 			task.spawn(function()
@@ -417,7 +417,7 @@ pcall(function()
 end)
 
 function nextInput()
-	
+
 	local Key
 	local UISWait = UIS.InputBegan:connect(function(Input,Proc)
 		if Input.KeyCode and Input.KeyCode ~= Enum.KeyCode.Unknown and not Proc then
@@ -472,7 +472,7 @@ local Games = {
 					end
 				end
 				Settings.CanSave = newSave
-
+				
 				repeat wait() until Player.PlayerGui:FindFirstChild("ClientGui")
 				local PlayerList = Player.PlayerGui.ClientGui.Mainframe.PlayerList.List
 				local SettingsButton,SettingCateg = UICreator:AddCategory(newUI,'Settings',true,1)
@@ -482,7 +482,7 @@ local Games = {
 				local SaveButton = UICreator:AddButton(newUI,SettingCateg,'Save Settings',4)
 				local KillButton = UICreator:AddButton(newUI,SettingCateg,"Kill Script",5)
 				local saveDebounce = false
-				
+
 				SaveButton.Button.MouseButton1Click:connect(function()
 					if saveDebounce then return end
 					saveDebounce = true
@@ -491,9 +491,9 @@ local Games = {
 					wait(3)
 					saveDebounce = false
 					SaveButton.Button.TextColor3 = Color3.fromRGB(255,255,255)
-					
+
 				end)
-				
+
 				KeybindChange.Button.Text = 'Toggle UI: '..(Settings.CanSave.UIKeybind)
 				Settings.UIKeybind = Enum.KeyCode[Settings.CanSave.UIKeybind]
 				KeybindChange.Button.MouseButton1Click:connect(function()
@@ -509,7 +509,7 @@ local Games = {
 						Settings.ChangingUIKeybind = false
 					end
 				end)
-				
+
 				KillButton.Button.MouseButton1Click:connect(function()
 
 					if newUI then newUI:Destroy() end
@@ -520,9 +520,9 @@ local Games = {
 							Label:Disconnect()
 						end
 					end
-					
+
 				end)
-				
+
 				if Settings.CanSave.LeaderboardSpectate == false then
 
 					SpectateButton.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
@@ -549,7 +549,7 @@ local Games = {
 					end
 
 				end)
-				
+
 				UIS.InputBegan:connect(function(Input,Proc)
 
 					if not Proc and Input.KeyCode.Name == Settings.CanSave.UIKeybind then
@@ -559,7 +559,7 @@ local Games = {
 					end
 
 				end)
-				
+
 				local function addButton(Label)
 					Settings.Labels[Label.Name] = Label.InputBegan:connect(function(Input)
 						if not Settings.CanSave.LeaderboardSpectate then return end
@@ -575,20 +575,20 @@ local Games = {
 						end
 					end)
 				end
-				
+
 				for i,l in pairs(PlayerList:GetChildren()) do
 					addButton(l)
 				end
-				
+
 				Player.PlayerGui.ChildRemoved:connect(function(obj)
-				    if obj.Name == "ClientGui" then
-				        PlayerList = Player.PlayerGui:WaitForChild("ClientGui")
-        				for i,l in pairs(PlayerList:GetChildren()) do
-        					addButton(l)
-        				end
-				    end
+					if obj.Name == "ClientGui" then
+						PlayerList = Player.PlayerGui:WaitForChild("ClientGui")
+						for i,l in pairs(PlayerList:GetChildren()) do
+							addButton(l)
+						end
+					end
 				end)
-				
+
 				task.spawn(function()
 					while true do
 						if Settings.killed then break end
@@ -614,6 +614,267 @@ local Games = {
 		};
 	};
 	
+	["DBZFS"] = {
+		[210213771] = function(FileName)
+			local Settings = {
+				CanSave = {
+					UIKeybind = "RightAlt";
+				};
+				curtarg = nil;
+				curmob = "";
+				autofarm = false;
+				autohit = false;
+				killed = false;
+				ChangingUIKeybind = false;
+				Labels = {};
+			}
+			local savedData = getData(FileName,Settings.CanSave)
+			local newSave = savedData
+			for i,v in pairs(Settings.CanSave) do
+				if not newSave[i] then
+					newSave[i] = v
+				end
+			end
+			Settings.CanSave = newSave
+			
+			local Inputs = {}
+			local ToFind = {
+				"Mouse1",
+				"Mouse2"
+			}
+			local Found = {}
+			local Living = workspace.Live
+			local InputEvent = Player.Backpack:WaitForChild("ServerTraits").Input
+			local UIS = game:GetService("UserInputService")
+			local getinputs = UIS.InputBegan:connect(function(input,proc)
+				if input.UserInputType == Enum.UserInputType.MouseButton1 then
+					if not Inputs["Mouse1"] then
+						Inputs["Mouse1"] = input
+						print("Mouse1")
+					end
+				end
+				if input.UserInputType == Enum.UserInputType.MouseButton2 then
+					if not Inputs["Mouse2"] then
+						Inputs["Mouse2"] = input
+						print("Mouse2")
+					end
+				end
+			end)
+			UICreator:Notify(newUI,"Finding Inputs",nil,5,654933978)
+			repeat
+				if not Inputs["Mouse1"] then
+					mouse1click()
+					mouse1release()
+					table.insert(Found,"Mouse1")
+				end
+				if not Inputs["Mouse2"] then
+					mouse2click()
+					mouse2release()
+					table.insert(Found,"Mouse2")
+				end
+				wait()
+			until #Found >= #ToFind
+			getinputs:Disconnect()
+			UICreator:Notify(newUI,"Got Inputs",nil,5,654933978)
+			
+			local SettingsButton,SettingCateg = UICreator:AddCategory(newUI,'Settings',false,2)
+			local FarmButton,FarmingCateg = UICreator:AddCategory(newUI,'Farming',true,1)
+			UICreator:AddLabel(newUI,SettingCateg,'Settings',1)
+			UICreator:AddLabel(newUI,FarmingCateg,'Farming',1)
+			local KeybindChange = UICreator:AddButton(newUI,SettingCateg,'Toggle UI: ???',3)
+			local SaveButton = UICreator:AddButton(newUI,SettingCateg,'Save Settings',4)
+			local KillButton = UICreator:AddButton(newUI,SettingCateg,"Kill Script",5)
+			local ShowNames = UICreator:AddButton(newUI,FarmingCateg,"Show Living Names",2)
+			local AutoHit = UICreator:AddButton(newUI,FarmingCateg,"Auto Hit",3)
+			local TargetBox = UICreator:AddBox(newUI,FarmingCateg,"Write Enemy Name",4)
+			local TargetButton = UICreator:AddButton(newUI,FarmingCateg,"Start Farming",5)
+			local saveDebounce = false
+
+			SaveButton.Button.MouseButton1Click:connect(function()
+				if saveDebounce then return end
+				saveDebounce = true
+				SaveButton.Button.TextColor3 = Color3.fromRGB(255,0,0)
+				saveData(FileName,Settings.CanSave)
+				wait(3)
+				saveDebounce = false
+				SaveButton.Button.TextColor3 = Color3.fromRGB(255,255,255)
+
+			end)
+
+			KeybindChange.Button.Text = 'Toggle UI: '..(Settings.CanSave.UIKeybind)
+			Settings.UIKeybind = Enum.KeyCode[Settings.CanSave.UIKeybind]
+			KeybindChange.Button.MouseButton1Click:connect(function()
+				if not Settings.CanSave.ChangingUIKeybind then
+					Settings.ChangingUIKeybind = true
+					KeybindChange.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+					local nextKey = nextInput()
+					if nextKey then
+						KeybindChange.Button.Text = 'Toggle UI: '..nextKey.Name
+						Settings.CanSave.UIKeybind = nextKey.Name
+					end
+					KeybindChange.Button.TextColor3 = Color3.fromRGB(255,255,255)
+					Settings.ChangingUIKeybind = false
+				end
+			end)
+
+			KillButton.Button.MouseButton1Click:connect(function()
+
+				if newUI then newUI:Destroy() end
+				Settings.killed = true
+				shared.hehehub = false
+				for i,Label in pairs(Settings.Labels) do
+					if Label then
+						Label:Disconnect()
+					end
+				end
+
+			end)
+
+			UIS.InputBegan:connect(function(Input,Proc)
+
+				if not Proc and Input.KeyCode.Name == Settings.CanSave.UIKeybind then
+
+					newUI.Frame.Visible = not newUI.Frame.Visible
+
+				end
+
+			end)
+			
+			TargetBox.Box.FocusLost:connect(function(enter)
+				Settings.curmob = TargetBox.Box.Text
+			end)
+			
+			if Settings.autohit == false then
+
+				AutoHit.Button.Text = "Activate AutoHit"
+				AutoHit.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+
+			else
+
+				AutoHit.Button.Text = "Deactivate AutoHit"
+				AutoHit.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+
+			end
+			
+			ShowNames.Button.MouseButton1Click:connect(function()
+				for i,live in pairs(Living:GetChildren()) do
+					if live:FindFirstChild("Humanoid") then
+						live.Humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.Viewer
+						local name
+						if live:FindFirstChild("OriginalName") then
+							name = live.OriginalName.Value
+						end
+						live.Humanoid.DisplayName = name or live.Name
+						live.Humanoid.NameDisplayDistance = 100
+						live.Humanoid.NameOcclusion = Enum.NameOcclusion.OccludeAll
+					end
+				end
+			end)
+
+			AutoHit.Button.MouseButton1Click:connect(function()
+
+				if not Settings.autohit then
+
+					AutoHit.Button.Text = "Deactivate AutoHit"
+					AutoHit.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+					Settings.autohit = true
+
+				else
+
+					AutoHit.Button.Text = "Activate AutoHit"
+					AutoHit.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+					Settings.autohit = false
+
+				end
+
+			end)
+			
+			if Settings.autofarm == false then
+				
+				TargetButton.Button.Text = "Start Farming"
+				TargetButton.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+
+			else
+				
+				TargetButton.Button.Text = "Stop Farming"
+				TargetButton.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+
+			end
+
+			TargetButton.Button.MouseButton1Click:connect(function()
+
+				if not Settings.autofarm then
+					
+					TargetButton.Button.Text = "Stop Farming"
+					TargetButton.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+					Settings.autofarm = true
+
+				else
+					
+					Settings.curtarg = nil
+					TargetButton.Button.Text = "Start Farming"
+					TargetButton.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+					Settings.autofarm = false
+
+				end
+
+			end)
+			
+			task.spawn(function()
+				local lastpunch = 0
+				while true do
+					if Settings.killed then break end
+					if Settings.autofarm then
+						pcall(function()
+							if Settings.curtarg then
+								local target = Settings.curtarg
+								local char = game.Players.LocalPlayer.Character
+								if not char then return end
+								if not char:FindFirstChild("HumanoidRootPart") then return end
+								if not char:FindFirstChild("Humanoid") then return end
+								if not target then Settings.curtarg = nil return end
+								if not target:FindFirstChild("HumanoidRootPart") then Settings.curtarg = nil return end
+								if not target:FindFirstChild("Humanoid") then Settings.curtarg = nil return end
+								if target.OriginalName.Value ~= Settings.curmob then Settings.curtarg = nil return end
+								local lv = CFrame.new(char.HumanoidRootPart.Position,target.HumanoidRootPart.Position)
+								local args = {
+									{"md"},
+									lv,
+									Inputs.Mouse1,
+									false,
+								}
+								local dist = (char.HumanoidRootPart.Position-target.HumanoidRootPart.Position).magnitude
+								if dist <= 50 then
+									char.HumanoidRootPart.CFrame = target.HumanoidRootPart.CFrame*CFrame.new(0,0,4)
+									if tick()-lastpunch >= 0.2 and Settings.autohit then
+										InputEvent:FireServer(table.unpack(args))
+									end
+								else
+									char.HumanoidRootPart.CFrame = char.HumanoidRootPart.CFrame:Lerp(target.HumanoidRootPart.CFrame,50/dist)
+								end
+							else
+								for i,live in pairs(Living:GetChildren()) do
+									if not live then continue end
+									if not live:FindFirstChild("HumanoidRootPart") then continue end
+									if not live:FindFirstChild("Humanoid") then continue end
+									if live:FindFirstChild("OriginalName") then
+										if live.OriginalName.Value:lower() == Settings.curmob:lower() then
+											Settings.curtarg = live
+											break
+										end
+									end
+								end
+							end
+						end)
+					end
+					game:GetService("RunService").RenderStepped:Wait()
+				end
+			end)
+			
+		end;
+		["Places"] = {}
+	};
+
 	["Miners Haven"] = {
 		["Places"] = {
 			[258258996] = function(FileName)
@@ -1223,27 +1484,42 @@ local Games = {
 }
 
 local PlaceName,Place
+local GameUI
 for i,g in pairs(Games) do
 	if g.Places[game.PlaceId] then
 		PlaceName = i
 		Place = g.Places[game.PlaceId]
 		break
 	end
+	if g[game.GameId] then
+		GameUI = g[game.GameId]
+		break
+	end
 end
 if not shared.hehehub then
 	shared.hehehub = true
+	if GameUI then
+		task.spawn(pcall,GameUI,game.GameId.." hehehub.txt")
+		UICreator:Notify(newUI,"UI Loaded (Game)",nil,2,654933978)
+		if not shared.hehehubloaded then
+			syn.queue_on_teleport([[loadstring(game:HttpGet("https://raw.githubusercontent.com/EnderBirt/bigbigbig/main/Sonic%20UI.lua",true))()]])
+		end
+		shared.hehehubloaded = true
+	end
 	if Place and PlaceName then
 		task.spawn(pcall,Place,PlaceName.." hehehub.txt")
 		UICreator:Notify(newUI,"UI Loaded",nil,2,654933978)
-		if not hehehubloaded then
+		if not shared.hehehubloaded then
 			syn.queue_on_teleport([[loadstring(game:HttpGet("https://raw.githubusercontent.com/EnderBirt/bigbigbig/main/Sonic%20UI.lua",true))()]])
 		end
 		shared.hehehubloaded = true
 	else
-		shared.hehehub = false
-		UICreator:Notify(newUI,"Invalid Place",nil,2,654933978)
-		wait(5)
-		newUI:Destroy()
+		if not GameUI then
+			shared.hehehub = false
+			UICreator:Notify(newUI,"Invalid Place",nil,2,654933978)
+			wait(5)
+			newUI:Destroy()
+		end
 	end
 else
 	UICreator:Notify(newUI,"Script already loaded",nil,2,654933978)
