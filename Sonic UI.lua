@@ -550,6 +550,16 @@ local Games = {
 
 				end)
 				
+				UIS.InputBegan:connect(function(Input,Proc)
+
+					if not Proc and Input.KeyCode.Name == Settings.CanSave.UIKeybind then
+
+						newUI.Frame.Visible = not newUI.Frame.Visible
+
+					end
+
+				end)
+				
 				local function addButton(Label)
 					Settings.Labels[Label.Name] = Label.InputBegan:connect(function(Input)
 						if not Settings.CanSave.LeaderboardSpectate then return end
