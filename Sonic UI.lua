@@ -580,6 +580,15 @@ local Games = {
 					addButton(l)
 				end
 				
+				Player.PlayerGui.ChildRemoved:connect(function(obj)
+				    if obj.Name == "ClientGui" then
+				        PlayerList = Player.PlayerGui:WaitForChild("ClientGui")
+        				for i,l in pairs(PlayerList:GetChildren()) do
+        					addButton(l)
+        				end
+				    end
+				end)
+				
 				task.spawn(function()
 					while true do
 						if Settings.killed then break end
