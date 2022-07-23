@@ -835,6 +835,7 @@ local Games = {
 								if not target then Settings.curtarg = nil return end
 								if not target:FindFirstChild("HumanoidRootPart") then Settings.curtarg = nil return end
 								if not target:FindFirstChild("Humanoid") then Settings.curtarg = nil return end
+								if target.Humanoid.Health <= 1 then Settings.curtarg = nil return end
 								if target.OriginalName.Value ~= Settings.curmob then Settings.curtarg = nil return end
 								local lv = CFrame.new(char.HumanoidRootPart.Position,target.HumanoidRootPart.Position)
 								local args = {
@@ -845,13 +846,27 @@ local Games = {
 								}
 								local dist = (char.HumanoidRootPart.Position-target.HumanoidRootPart.Position).magnitude
 								if dist <= 50 then
-									char.HumanoidRootPart.CFrame = target.HumanoidRootPart.CFrame*CFrame.new(0,0,4)
+									char.HumanoidRootPart.CFrame = CFrame.new((target.HumanoidRootPart.CFrame*CFrame.new(0,-2,2)).p,target.HumanoidRootPart.Position)
 									if tick()-lastpunch >= 0.2 and Settings.autohit then
 										lastpunch = tick()
 										InputEvent:FireServer(table.unpack(args))
 									end
 								else
 									char.HumanoidRootPart.CFrame = char.HumanoidRootPart.CFrame:Lerp(target.HumanoidRootPart.CFrame,50/dist)
+									local td = char.HumanoidRootPart.Touched:connect(function(obj)
+										if obj.CanCollide == true then
+											obj.CanCollide = false
+											task.spawn(function()
+												wait(1)
+												if not obj then return end
+												obj.CanCollide = true
+											end)
+										end
+									end)
+									task.spawn(function()
+										wait(1)
+										td:Disconnect()
+									end)
 								end
 							else
 								for i,live in pairs(Living:GetChildren()) do
