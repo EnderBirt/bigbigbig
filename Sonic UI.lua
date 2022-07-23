@@ -847,6 +847,7 @@ local Games = {
 								if dist <= 50 then
 									char.HumanoidRootPart.CFrame = target.HumanoidRootPart.CFrame*CFrame.new(0,0,4)
 									if tick()-lastpunch >= 0.2 and Settings.autohit then
+										lastpunch = tick()
 										InputEvent:FireServer(table.unpack(args))
 									end
 								else
