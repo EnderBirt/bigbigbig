@@ -478,7 +478,7 @@ local Games = {
 				local PlayerList = Player.PlayerGui.ClientGui.Mainframe.PlayerList.List
 				local QoLButton,QoLCateg = UICreator:AddCategory(newUI,'QoL',true,2)
 				local SettingsButton,SettingCateg = UICreator:AddCategory(newUI,'Settings',false,2)
-				UICreator:AddLabel(newUI,SettingCateg,'QoL',1)
+				UICreator:AddLabel(newUI,QoLCateg,'QoL',1)
 				UICreator:AddLabel(newUI,SettingCateg,'Settings',1)
 				local SpectateButton = UICreator:AddButton(newUI,QoLCateg,'Leaderboard Spectate',2)
 				local EyeButton = UICreator:AddButton(newUI,QoLCateg,'Eye Notify',3)
@@ -568,7 +568,7 @@ local Games = {
 
 					if not Settings.CanSave.EyeNotify then
 
-						SpectateButton.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+						EyeButton.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
 						Settings.CanSave.EyeNotify = true
 
 					else
@@ -615,7 +615,7 @@ local Games = {
 					fh.ChildAdded:connect(function(obj)
 						if not Settings.CanSave.EyeNotify or Settings.killed then return end
 						if obj:IsA("Decal") and obj.ZIndex >= 5 and obj.Name ~= "NormalPupil" then
-							UICreator:Notify(newUI,Character.Name.." ("..obj.Name..")",nil,2,654933978)
+							UICreator:Notify(newUI,Character.Name.." ("..obj.Name..")",nil,10,654933978)
 						end
 					end)
 				end
