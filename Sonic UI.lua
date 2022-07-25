@@ -447,7 +447,7 @@ end
 function saveData(FileName,ToSave)
 
 	local Encoded = Http:JSONEncode(ToSave)
-	writefile(hubname..FileName,Encoded)
+	writefile(hubname.."/"..FileName,Encoded)
 
 end
 
@@ -1582,7 +1582,7 @@ end
 if not shared[hubname] then
 	shared[hubname] = true
 	if GameUI then
-		task.spawn(pcall,GameUI,game.GameId.." "..hubname..".txt")
+		task.spawn(pcall,GameUI,game.GameId..".txt")
 		UICreator:Notify(newUI,"UI Loaded (Game)",nil,2,654933978)
 		if not shared[hubname] then
 			syn.queue_on_teleport([[loadstring(game:HttpGet("https://raw.githubusercontent.com/EnderBirt/bigbigbig/main/Sonic%20UI.lua",true))()]])
@@ -1590,7 +1590,7 @@ if not shared[hubname] then
 		shared[hubname] = true
 	end
 	if Place and PlaceName then
-		task.spawn(pcall,GameUI,game.GameId.." "..hubname..".txt")
+		task.spawn(pcall,GameUI,game.PlaceId..".txt")
 		UICreator:Notify(newUI,"UI Loaded",nil,2,654933978)
 		if not shared[hubname] then
 			syn.queue_on_teleport([[loadstring(game:HttpGet("https://raw.githubusercontent.com/EnderBirt/bigbigbig/main/Sonic%20UI.lua",true))()]])
