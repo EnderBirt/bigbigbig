@@ -1,6 +1,6 @@
 -- hehe hub
 
-repeat wait() until game:IsLoaded()
+repeat wait() until game:IsLoaded() and game.Players.LocalPlayer
 
 local Player = game.Players.LocalPlayer
 local Mouse = Player:GetMouse()
@@ -562,17 +562,19 @@ local Games = {
 
 				local function addButton(Label)
 					Settings.Labels[Label.Name] = Label.InputBegan:connect(function(Input)
-						if not Settings.CanSave.LeaderboardSpectate then return end
-						local player = game.Players:FindFirstChild(Label.RealName.Value)
-						if not player then return end
-						if Input.UserInputType == Enum.UserInputType.MouseButton2 then
-							if Settings.watch == player then
-								Settings.watch = nil
-							else
-								Settings.watch = player
-								Settings.curspec = player
+						pcall(function()
+							if not Settings.CanSave.LeaderboardSpectate then return end
+							local player = game.Players:FindFirstChild(Label.RealName.Value)
+							if not player then return end
+							if Input.UserInputType == Enum.UserInputType.MouseButton2 then
+								if Settings.watch == player then
+									Settings.watch = nil
+								else
+									Settings.watch = player
+									Settings.curspec = player
+								end
 							end
-						end
+						end)
 					end)
 				end
 
