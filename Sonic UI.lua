@@ -476,7 +476,7 @@ local Games = {
 
 				repeat wait() until Player.PlayerGui:FindFirstChild("ClientGui")
 				local PlayerList = Player.PlayerGui.ClientGui.Mainframe.PlayerList.List
-				local QoLButton,QoLCateg = UICreator:AddCategory(newUI,'QoL',false,2)
+				local QoLButton,QoLCateg = UICreator:AddCategory(newUI,'QoL',true,2)
 				local SettingsButton,SettingCateg = UICreator:AddCategory(newUI,'Settings',false,2)
 				UICreator:AddLabel(newUI,SettingCateg,'QoL',1)
 				UICreator:AddLabel(newUI,SettingCateg,'Settings',1)
