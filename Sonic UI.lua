@@ -633,13 +633,13 @@ local Games = {
 					v.CharacterAdded:connect(newchar)
 				end
 
-				game.Players.PlayerAdded:connect(function(Player)
+				game.Players.PlayerAdded:connect(function(plr)
 					if Settings.killed then return end
-					local character = Player.character
+					local character = plr.character
 					if character then
 						newchar(character)
 					end
-					Player.CharacterAdded:connect(newchar)
+					plr.CharacterAdded:connect(newchar)
 				end)
 
 				for i,l in pairs(PlayerList:GetChildren()) do
@@ -669,9 +669,10 @@ local Games = {
 								end
 							else
 								local targ = Settings.watch
-								local char = targ.Character or targ.CharacterAdded:Wait()
+								local char = targ.Character
+								if not char then return end
 								if Settings.watch ~= targ then return end
-								workspace.CurrentCamera.CameraSubject = char:WaitForChild("Humanoid")
+								workspace.CurrentCamera.CameraSubject = char.Humanoid
 							end
 						end)
 						wait()
