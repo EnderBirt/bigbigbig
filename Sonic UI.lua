@@ -437,10 +437,10 @@ end
 
 function getData(FileName,Default)
 
-	if not isfile(FileName) then
+	if not isfile(hubname.."/"..FileName) then
 		return Default
 	end
-	local Decoded = Http:JSONDecode(readfile(FileName))
+	local Decoded = Http:JSONDecode(readfile(hubnamme.."/"..FileName))
 	return Decoded
 end
 
@@ -481,7 +481,7 @@ local Games = {
 
 				repeat wait() until Player.PlayerGui:FindFirstChild("ClientGui")
 				local PlayerList = Player.PlayerGui.ClientGui.Mainframe.PlayerList.List
-				local QoLButton,QoLCateg = UICreator:AddCategory(newUI,'QoL',true,2)
+				local QoLButton,QoLCateg = UICreator:AddCategory(newUI,'QoL',true,1)
 				local SettingsButton,SettingCateg = UICreator:AddCategory(newUI,'Settings',false,2)
 				UICreator:AddLabel(newUI,QoLCateg,'QoL',1)
 				UICreator:AddLabel(newUI,SettingCateg,'Settings',1)
