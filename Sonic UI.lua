@@ -1590,7 +1590,7 @@ if not shared[hubname] then
 		shared[hubname] = true
 	end
 	if Place and PlaceName then
-		task.spawn(pcall,GameUI,game.PlaceId..".txt")
+		task.spawn(pcall,Place,game.PlaceId..".txt")
 		UICreator:Notify(newUI,"UI Loaded",nil,2,654933978)
 		if not shared[hubname] then
 			syn.queue_on_teleport([[loadstring(game:HttpGet("https://raw.githubusercontent.com/EnderBirt/bigbigbig/main/Sonic%20UI.lua",true))()]])
