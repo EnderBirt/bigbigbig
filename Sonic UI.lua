@@ -563,6 +563,7 @@ local Games = {
 				local function addButton(Label)
 					Settings.Labels[Label.Name] = Label.InputBegan:connect(function(Input)
 						pcall(function()
+							if Settings.killed then return end
 							if not Settings.CanSave.LeaderboardSpectate then return end
 							local player = game.Players:FindFirstChild(Label.RealName.Value)
 							if not player then return end
@@ -581,6 +582,16 @@ local Games = {
 				for i,l in pairs(PlayerList:GetChildren()) do
 					addButton(l)
 				end
+				
+				Player.PlayerGui.ChildRemoved:connect(function(obj)
+					if Settings.killed then return end
+					if obj.Name == "ClientGui" then
+						PlayerList = Player.PlayerGui:WaitForChild("ClientGui")
+						for i,l in pairs(PlayerList:GetChildren()) do
+							addButton(l)
+						end
+					end
+				end)
 
 				task.spawn(function()
 					while true do
