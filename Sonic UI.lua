@@ -586,7 +586,7 @@ local Games = {
 				Player.PlayerGui.ChildRemoved:connect(function(obj)
 					if Settings.killed then return end
 					if obj.Name == "ClientGui" then
-						PlayerList = Player.PlayerGui:WaitForChild("ClientGui")
+						PlayerList = Player.PlayerGui:WaitForChild("ClientGui").MainFrame.PlayerList.List
 						for i,l in pairs(PlayerList:GetChildren()) do
 							addButton(l)
 						end
