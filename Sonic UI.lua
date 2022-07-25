@@ -455,6 +455,7 @@ local Games = {
 			[10266164381] = function(FileName)
 				local Settings = {
 					CanSave = {
+						EyeNotify = false;
 						LeaderboardSpectate = false;
 						UIKeybind = "RightAlt";
 					};
@@ -472,15 +473,18 @@ local Games = {
 					end
 				end
 				Settings.CanSave = newSave
-				
+
 				repeat wait() until Player.PlayerGui:FindFirstChild("ClientGui")
 				local PlayerList = Player.PlayerGui.ClientGui.Mainframe.PlayerList.List
-				local SettingsButton,SettingCateg = UICreator:AddCategory(newUI,'Settings',true,1)
+				local QoLButton,QoLCateg = UICreator:AddCategory(newUI,'QoL',false,2)
+				local SettingsButton,SettingCateg = UICreator:AddCategory(newUI,'Settings',false,2)
+				UICreator:AddLabel(newUI,SettingCateg,'QoL',1)
 				UICreator:AddLabel(newUI,SettingCateg,'Settings',1)
-				local SpectateButton = UICreator:AddButton(newUI,SettingCateg,'Leaderboard Spectate',2)
-				local KeybindChange = UICreator:AddButton(newUI,SettingCateg,'Toggle UI: ???',3)
-				local SaveButton = UICreator:AddButton(newUI,SettingCateg,'Save Settings',4)
-				local KillButton = UICreator:AddButton(newUI,SettingCateg,"Kill Script",5)
+				local SpectateButton = UICreator:AddButton(newUI,QoLCateg,'Leaderboard Spectate',2)
+				local EyeButton = UICreator:AddButton(newUI,QoLCateg,'Eye Notify',3)
+				local KeybindChange = UICreator:AddButton(newUI,SettingCateg,'Toggle UI: ???',2)
+				local SaveButton = UICreator:AddButton(newUI,SettingCateg,'Save Settings',3)
+				local KillButton = UICreator:AddButton(newUI,SettingCateg,"Kill Script",4)
 				local saveDebounce = false
 
 				SaveButton.Button.MouseButton1Click:connect(function()
@@ -549,6 +553,32 @@ local Games = {
 					end
 
 				end)
+				
+				if Settings.CanSave.EyeNotify == false then
+
+					EyeButton.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+
+				else
+
+					EyeButton.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+
+				end
+
+				EyeButton.Button.MouseButton1Click:connect(function()
+
+					if not Settings.CanSave.EyeNotify then
+
+						SpectateButton.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
+						Settings.CanSave.EyeNotify = true
+
+					else
+
+						EyeButton.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+						Settings.CanSave.EyeNotify = false
+
+					end
+
+				end)
 
 				UIS.InputBegan:connect(function(Input,Proc)
 
@@ -579,10 +609,38 @@ local Games = {
 					end)
 				end
 
+				local function newchar(Character)
+					repeat wait() until Character and Character:IsDescendantOf(workspace)
+					local fh = Character:WaitForChild("FakeHead")
+					fh.ChildAdded:connect(function(obj)
+						if not Settings.CanSave.EyeNotify or Settings.killed then return end
+						if obj:IsA("Decal") and obj.ZIndex >= 5 and obj.Name ~= "NormalPupil" then
+							UICreator:Notify(newUI,Character.Name.." ("..obj.Name..")",nil,2,654933978)
+						end
+					end)
+				end
+
+				for i,v in pairs(game.Players:GetPlayers()) do
+					local character = v.character
+					if character then
+						newchar(character)
+					end
+					v.CharacterAdded:connect(newchar)
+				end
+
+				game.Players.PlayerAdded:connect(function(Player)
+					if Settings.killed then return end
+					local character = Player.character
+					if character then
+						newchar(character)
+					end
+					Player.CharacterAdded:connect(newchar)
+				end)
+
 				for i,l in pairs(PlayerList:GetChildren()) do
 					addButton(l)
 				end
-				
+
 				Player.PlayerGui.ChildRemoved:connect(function(obj)
 					if Settings.killed then return end
 					if obj.Name == "ClientGui" then
@@ -617,7 +675,7 @@ local Games = {
 			end;
 		};
 	};
-	
+
 	["DBZFS"] = {
 		[210213771] = function(FileName)
 			local Settings = {
@@ -640,7 +698,7 @@ local Games = {
 				end
 			end
 			Settings.CanSave = newSave
-			
+
 			local Inputs = {}
 			local ToFind = {
 				"Mouse1",
@@ -680,7 +738,7 @@ local Games = {
 			until #Found >= #ToFind
 			getinputs:Disconnect()
 			UICreator:Notify(newUI,"Got Inputs",nil,5,654933978)
-			
+
 			local SettingsButton,SettingCateg = UICreator:AddCategory(newUI,'Settings',false,2)
 			local FarmButton,FarmingCateg = UICreator:AddCategory(newUI,'Farming',true,1)
 			UICreator:AddLabel(newUI,SettingCateg,'Settings',1)
@@ -743,11 +801,11 @@ local Games = {
 				end
 
 			end)
-			
+
 			TargetBox.Box.FocusLost:connect(function(enter)
 				Settings.curmob = TargetBox.Box.Text
 			end)
-			
+
 			if Settings.autohit == false then
 
 				AutoHit.Button.Text = "Activate AutoHit"
@@ -759,7 +817,7 @@ local Games = {
 				AutoHit.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
 
 			end
-			
+
 			ShowNames.Button.MouseButton1Click:connect(function()
 				for i,live in pairs(Living:GetChildren()) do
 					if live:FindFirstChild("Humanoid") then
@@ -792,14 +850,14 @@ local Games = {
 				end
 
 			end)
-			
+
 			if Settings.autofarm == false then
-				
+
 				TargetButton.Button.Text = "Start Farming"
 				TargetButton.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
 
 			else
-				
+
 				TargetButton.Button.Text = "Stop Farming"
 				TargetButton.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
 
@@ -808,13 +866,13 @@ local Games = {
 			TargetButton.Button.MouseButton1Click:connect(function()
 
 				if not Settings.autofarm then
-					
+
 					TargetButton.Button.Text = "Stop Farming"
 					TargetButton.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
 					Settings.autofarm = true
 
 				else
-					
+
 					Settings.curtarg = nil
 					TargetButton.Button.Text = "Start Farming"
 					TargetButton.Button.TextColor3 = Color3.fromRGB(0, 255, 0)
@@ -823,7 +881,7 @@ local Games = {
 				end
 
 			end)
-			
+
 			task.spawn(function()
 				local lastpunch = 0
 				while true do
@@ -890,7 +948,7 @@ local Games = {
 					game:GetService("RunService").RenderStepped:Wait()
 				end
 			end)
-			
+
 		end;
 		["Places"] = {}
 	};
