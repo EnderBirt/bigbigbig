@@ -430,6 +430,11 @@ function nextInput()
 
 end
 
+local hubname = "Sonic UI"
+if not isfolder(hubname) then
+	makefolder(hubname)
+end
+
 function getData(FileName,Default)
 
 	if not isfile(FileName) then
@@ -442,11 +447,11 @@ end
 function saveData(FileName,ToSave)
 
 	local Encoded = Http:JSONEncode(ToSave)
-	writefile(FileName,Encoded)
+	writefile(hubname..FileName,Encoded)
 
 end
 
-local newUI = UICreator:CreateUI('hehehub',game.CoreGui)
+local newUI = UICreator:CreateUI(hubname,game.CoreGui)
 syn.protect_gui(newUI)
 
 local Games = {
@@ -518,7 +523,7 @@ local Games = {
 
 					if newUI then newUI:Destroy() end
 					Settings.killed = true
-					shared.hehehub = false
+					shared[hubname] = false
 					for i,Label in pairs(Settings.Labels) do
 						if Label then
 							Label:Disconnect()
@@ -553,7 +558,7 @@ local Games = {
 					end
 
 				end)
-				
+
 				if Settings.CanSave.EyeNotify == false then
 
 					EyeButton.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
@@ -783,7 +788,7 @@ local Games = {
 
 				if newUI then newUI:Destroy() end
 				Settings.killed = true
-				shared.hehehub = false
+				shared[hubname] = false
 				for i,Label in pairs(Settings.Labels) do
 					if Label then
 						Label:Disconnect()
@@ -1230,7 +1235,7 @@ local Games = {
 
 					if newUI then newUI:Destroy() end
 					Settings.Killed = true
-					shared.hehehub = false
+					shared[hubname] = false
 
 				end)
 
@@ -1574,26 +1579,26 @@ for i,g in pairs(Games) do
 		break
 	end
 end
-if not shared.hehehub then
-	shared.hehehub = true
+if not shared[hubname] then
+	shared[hubname] = true
 	if GameUI then
-		task.spawn(pcall,GameUI,game.GameId.." hehehub.txt")
+		task.spawn(pcall,GameUI,game.GameId.." "..hubname..".txt")
 		UICreator:Notify(newUI,"UI Loaded (Game)",nil,2,654933978)
-		if not shared.hehehubloaded then
+		if not shared[hubname] then
 			syn.queue_on_teleport([[loadstring(game:HttpGet("https://raw.githubusercontent.com/EnderBirt/bigbigbig/main/Sonic%20UI.lua",true))()]])
 		end
-		shared.hehehubloaded = true
+		shared[hubname] = true
 	end
 	if Place and PlaceName then
-		task.spawn(pcall,Place,PlaceName.." hehehub.txt")
+		task.spawn(pcall,GameUI,game.GameId.." "..hubname..".txt")
 		UICreator:Notify(newUI,"UI Loaded",nil,2,654933978)
-		if not shared.hehehubloaded then
+		if not shared[hubname] then
 			syn.queue_on_teleport([[loadstring(game:HttpGet("https://raw.githubusercontent.com/EnderBirt/bigbigbig/main/Sonic%20UI.lua",true))()]])
 		end
-		shared.hehehubloaded = true
+		shared[hubname] = true
 	else
 		if not GameUI then
-			shared.hehehub = false
+			shared[hubname] = false
 			UICreator:Notify(newUI,"Invalid Place",nil,2,654933978)
 			wait(5)
 			newUI:Destroy()
