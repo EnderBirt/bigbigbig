@@ -832,6 +832,9 @@ local Games = {
 						if live:FindFirstChild("OriginalName") then
 							name = live.OriginalName.Value
 						end
+						if live.Head.Transparency > 0.9 then
+							live.Head.Transparency = 0.5
+						end
 						live.Humanoid.DisplayName = name or live.Name
 						live.Humanoid.NameDisplayDistance = 100
 						live.Humanoid.NameOcclusion = Enum.NameOcclusion.OccludeAll
@@ -914,7 +917,7 @@ local Games = {
 								}
 								local dist = (char.HumanoidRootPart.Position-target.HumanoidRootPart.Position).magnitude
 								if dist <= 50 then
-									char.HumanoidRootPart.CFrame = CFrame.new((target.HumanoidRootPart.CFrame*CFrame.new(0,-2,2)).p,target.HumanoidRootPart.Position)
+									char.HumanoidRootPart.CFrame = CFrame.new((target.HumanoidRootPart.CFrame*CFrame.new(0,0,4)).p,target.HumanoidRootPart.Position)
 									if tick()-lastpunch >= 0.2 and Settings.autohit then
 										lastpunch = tick()
 										InputEvent:FireServer(table.unpack(args))
