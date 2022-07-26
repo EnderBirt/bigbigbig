@@ -903,7 +903,7 @@ local Games = {
 								if not target then Settings.curtarg = nil return end
 								if not target:FindFirstChild("HumanoidRootPart") then Settings.curtarg = nil return end
 								if not target:FindFirstChild("Humanoid") then Settings.curtarg = nil return end
-								if target.Humanoid.Health <= 1 then Settings.curtarg = nil return end
+								if target.Humanoid:GetState() == Enum.HumanoidStateType.Dead then Settings.curtarg = nil return end
 								if target.OriginalName.Value ~= Settings.curmob then Settings.curtarg = nil return end
 								local lv = CFrame.new(char.HumanoidRootPart.Position,target.HumanoidRootPart.Position)
 								local args = {
@@ -941,6 +941,7 @@ local Games = {
 									if not live then continue end
 									if not live:FindFirstChild("HumanoidRootPart") then continue end
 									if not live:FindFirstChild("Humanoid") then continue end
+									if live.Humanoid:GetState() == Enum.HumanoidStateType.Dead then continue end
 									if live:FindFirstChild("OriginalName") then
 										if live.OriginalName.Value:lower() == Settings.curmob:lower() then
 											Settings.curtarg = live
