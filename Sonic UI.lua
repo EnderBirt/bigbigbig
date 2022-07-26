@@ -916,7 +916,7 @@ local Games = {
 									false,
 								}
 								local dist = (char.HumanoidRootPart.Position-target.HumanoidRootPart.Position).magnitude
-								if dist <= 50 then
+								if dist <= 400 then
 									char.HumanoidRootPart.CFrame = CFrame.new((target.HumanoidRootPart.CFrame*CFrame.new(0,0,4)).p,target.HumanoidRootPart.Position)
 									workspace.Camera.CFrame = CFrame.new((char.HumanoidRootPart.CFrame*CFrame.new(0,4,8)).Position,target.HumanoidRootPart.Position)
 									if tick()-lastpunch >= 0.2 and Settings.autohit then
@@ -924,7 +924,7 @@ local Games = {
 										InputEvent:FireServer(table.unpack(args))
 									end
 								else
-									char.HumanoidRootPart.CFrame = char.HumanoidRootPart.CFrame:Lerp(target.HumanoidRootPart.CFrame,50/dist)
+									char.HumanoidRootPart.CFrame = char.HumanoidRootPart.CFrame:Lerp(target.HumanoidRootPart.CFrame,400/dist)
 									local td = char.HumanoidRootPart.Touched:connect(function(obj)
 										if obj.CanCollide == true then
 											obj.CanCollide = false
