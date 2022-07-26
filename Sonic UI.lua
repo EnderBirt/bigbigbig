@@ -924,7 +924,7 @@ local Games = {
 										InputEvent:FireServer(table.unpack(args))
 									end
 								else
-									char.HumanoidRootPart.CFrame = char.HumanoidRootPart.CFrame:Lerp(target.HumanoidRootPart.CFrame,400/dist)
+									char.HumanoidRootPart.CFrame = char.HumanoidRootPart.CFrame:Lerp(target.HumanoidRootPart.CFrame,50/dist)
 									local td = char.HumanoidRootPart.Touched:connect(function(obj)
 										if obj.CanCollide == true then
 											obj.CanCollide = false
