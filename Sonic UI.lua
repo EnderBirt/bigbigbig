@@ -832,7 +832,7 @@ local Games = {
 						if live:FindFirstChild("OriginalName") then
 							name = live.OriginalName.Value
 						end
-						if live.Head.Transparency > 0.9 then
+						if live:FindFirstChild("Head") and live.Head.Transparency > 0.9 then
 							live.Head.Transparency = 0.5
 						end
 						live.Humanoid.DisplayName = name or live.Name
