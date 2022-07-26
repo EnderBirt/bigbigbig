@@ -1,6 +1,6 @@
 -- hehe hub
 
-repeat wait() until game:IsLoaded() and game.Players.LocalPlayer
+repeat wait() until game:IsLoaded()
 
 local Player = game.Players.LocalPlayer
 local Mouse = Player:GetMouse()
