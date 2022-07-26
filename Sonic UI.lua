@@ -440,7 +440,7 @@ function getData(FileName,Default)
 	if not isfile(hubname.."/"..FileName) then
 		return Default
 	end
-	local Decoded = Http:JSONDecode(readfile(hubnamme.."/"..FileName))
+	local Decoded = Http:JSONDecode(readfile(hubname.."/"..FileName))
 	return Decoded
 end
 
