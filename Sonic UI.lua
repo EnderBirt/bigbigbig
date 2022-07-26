@@ -1,5 +1,6 @@
 -- hehe hub
 
+wait(2)
 repeat wait() until game:IsLoaded()
 
 local Player = game.Players.LocalPlayer
