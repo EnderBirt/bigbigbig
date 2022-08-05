@@ -6,6 +6,9 @@ repeat wait() until game:IsLoaded()
 local Player = game.Players.LocalPlayer
 local Mouse = Player:GetMouse()
 local UICreator = {}
+local tpcode = [[
+loadstring(game:HttpGet("https://raw.githubusercontent.com/EnderBirt/bigbigbig/main/Sonic%20UI.lua",true))()
+]]
 
 local IsClient = game:GetService("RunService"):IsClient()
 local UIS = game:GetService('UserInputService')
@@ -964,6 +967,282 @@ local Games = {
 		end;
 		["Places"] = {}
 	};
+	
+	["Elemental Awakening"] = {
+		["Places"] = {
+			[6969185078] = function(FileName)
+				local Settings = {
+					CanSave = {
+						UIKeybind = "RightAlt";
+						SpecificSpin = "";
+						SpinSettings = {
+							Common = false;
+							Uncommon = false;
+							Rare = false;
+							Exotic = false;
+							Legendary = false;
+							Heavenly = false;
+						};
+					};
+					AutoFarm = false;
+					AutoSpin = false;
+					Active = true;
+					ChangingUIKeybind = false;
+				}
+				local savedData = getData(FileName,Settings.CanSave)
+				local newSave = savedData
+
+				for i,v in pairs(Settings.CanSave) do
+
+					if not newSave[i] then
+
+						newSave[i] = v
+
+					end
+
+				end
+
+				Settings.CanSave = newSave
+				
+				local AutoButton,AutoCat = UICreator:AddCategory(newUI,'AutoFarm',true,1)
+				local SettingButton,SettingCateg = UICreator:AddCategory(newUI,'Settings',false,2)
+				UICreator:AddLabel(newUI,SettingCateg,'Settings',1)
+				UICreator:AddLabel(newUI,AutoCat,'AutoFarm',1)
+				local KeybindChange = UICreator:AddButton(newUI,SettingCateg,'Toggle UI: ???',2)
+				local SaveButton = UICreator:AddButton(newUI,SettingCateg,'Save Settings',3)
+				local KillButton = UICreator:AddButton(newUI,SettingCateg,"Kill Script",4)
+				local FarmButton = UICreator:AddButton(newUI,AutoCat,"Auto Farm",2)
+				local MagicLabel = UICreator:AddLabel(newUI,AutoCat,"Magic:",3)
+				local SpinButton = UICreator:AddButton(newUI,AutoCat,"Auto Spin",4)
+				local SpecifixLab = UICreator:AddLabel(newUI,AutoCat,"Specific: "..Settings.CanSave.SpecificSpin,5)
+				local SpecificBox = UICreator:AddBox(newUI,AutoCat,"MagicName",6)
+				for i,v in pairs(Settings.CanSave.SpinSettings) do
+					local curLO
+					if i == "Common" then curLO = 7 end
+					if i == "Uncommon" then curLO = 8 end
+					if i == "Rare" then curLO = 9 end
+					if i == "Exotic" then curLO = 10 end
+					if i == "Legendary" then curLO = 11 end
+					if i == "Heavenly" then curLO = 12 end
+					if not curLO then curLO = 13 end
+					local newButton = UICreator:AddButton(newUI,AutoCat,i,curLO)
+					if not v then
+						newButton.Button.TextColor3 = Color3.fromRGB(255,0,0)
+					else
+						newButton.Button.TextColor3 = Color3.fromRGB(0,255,0)
+					end
+					newButton.Button.MouseButton1Click:connect(function()
+						Settings.CanSave.SpinSettings[i] = not Settings.CanSave.SpinSettings[i]
+						if not Settings.CanSave.SpinSettings[i] then
+							newButton.Button.TextColor3 = Color3.fromRGB(255,0,0)
+						else
+							newButton.Button.TextColor3 = Color3.fromRGB(0,255,0)
+						end
+					end)
+				end
+				SpecificBox.Box.FocusLost:connect(function()
+					Settings.CanSave.SpecificSpin = SpecificBox.Box.Text
+					SpecifixLab.Label.Text = Settings.CanSave.SpecificSpin
+				end)
+				
+				MagicLabel.Label.Text = "Magic: "..game.ReplicatedStorage.Data:WaitForChild(Player.UserId).Magic.Value
+				game.ReplicatedStorage.Data[Player.UserId].Magic.Changed:connect(function()
+					MagicLabel.Label.Text = "Magic: "..game.ReplicatedStorage.Data[Player.UserId].Magic.Value
+				end)
+				
+				local Respawning = false
+				local saveDebounce = false
+
+				SaveButton.Button.MouseButton1Click:connect(function()
+
+					if saveDebounce then return end
+					saveDebounce = true
+					SaveButton.Button.TextColor3 = Color3.fromRGB(255,0,0)
+
+					saveData(FileName,Settings.CanSave)
+
+					wait(3)
+
+					saveDebounce = false
+					SaveButton.Button.TextColor3 = Color3.fromRGB(255,255,255)
+
+				end)
+
+				KeybindChange.Button.Text = 'Toggle UI: '..(Settings.CanSave.UIKeybind)
+				Settings.UIKeybind = Enum.KeyCode[Settings.CanSave.UIKeybind]
+
+				KeybindChange.Button.MouseButton1Click:connect(function()
+
+					if not Settings.CanSave.ChangingUIKeybind then
+
+						Settings.ChangingUIKeybind = true
+						KeybindChange.Button.TextColor3 = Color3.fromRGB(255, 0, 0)
+
+						local nextKey = nextInput()
+
+						if nextKey then
+
+							KeybindChange.Button.Text = 'Toggle UI: '..nextKey.Name
+							Settings.CanSave.UIKeybind = nextKey.Name
+
+						end
+
+						KeybindChange.Button.TextColor3 = Color3.fromRGB(255,255,255)
+						Settings.ChangingUIKeybind = false
+
+					end
+
+				end)
+				
+				KillButton.Button.MouseButton1Click:connect(function()
+					Settings.Active = false
+					shared[hubname] = false
+					newUI:Destroy()
+				end)
+				
+				FarmButton.Button.TextColor3 = Color3.fromRGB(255,0,0)
+				SpinButton.Button.TextColor3 = Color3.fromRGB(255,0,0)
+				
+				FarmButton.Button.MouseButton1Click:connect(function()
+					Settings.AutoFarm = not Settings.AutoFarm
+					if not Settings.AutoFarm then
+						FarmButton.Button.TextColor3 = Color3.fromRGB(255,0,0)
+					else
+						FarmButton.Button.TextColor3 = Color3.fromRGB(0,255,0)
+					end
+				end)
+				
+				SpinButton.Button.MouseButton1Click:connect(function()
+					Settings.AutoSpin = not Settings.AutoSpin
+					if not Settings.AutoSpin then
+						SpinButton.Button.TextColor3 = Color3.fromRGB(255,0,0)
+					else
+						SpinButton.Button.TextColor3 = Color3.fromRGB(0,255,0)
+					end
+				end)
+				
+				UIS.InputBegan:connect(function(Input,Proc)
+
+					if not Proc and Input.KeyCode.Name == Settings.CanSave.UIKeybind then
+
+						newUI.Frame.Visible = not newUI.Frame.Visible
+
+					end
+
+				end)
+				
+				local function Respawn()
+					Respawning = true
+					local Character = Player.Character
+					if not Character then
+						local Suc = game:GetService("ReplicatedStorage").Events.Spawn2:InvokeServer()
+						if not Suc then
+							UICreator:Notify(newUI,"Failed to respawn.",nil,5,654933978)
+							Respawning = false
+							return
+						end
+					else
+						Character:BreakJoints()
+						local newChar = Player.CharacterRemoving:Wait()
+						wait(4)
+						local Suc = game:GetService("ReplicatedStorage").Events.Spawn2:InvokeServer()
+						if not Suc then
+							UICreator:Notify(newUI,"Failed to respawn.",nil,5,654933978)
+							Respawning = false
+							return
+						end
+					end
+					Respawning = false
+				end
+				
+				local function Spin()
+					local got
+					while true do
+						local SpinCount = game.ReplicatedStorage.Data[Player.UserId].Spins.Value
+						if SpinCount <= 0 then break end
+						if got then break end
+						local Magic,Rarity = game:GetService("ReplicatedStorage").Events.Spin:InvokeServer(false)
+						if Magic:lower() == Settings.CanSave.SpecificSpin:lower() then
+							got = Magic
+							break
+						elseif Settings.CanSave.SpinSettings[Rarity] then
+							got = Magic
+							break
+						end
+						wait()
+					end
+					if got then
+						UICreator:Notify(newUI,"Rolled "..got,nil,15,654933978)
+						SpinButton.Button.TextColor3 = Color3.fromRGB(255,0,0)
+						Settings.AutoSpin = false
+					end
+					Respawn()
+				end
+				
+				local function AttemptSkill(Tool)
+					local args = {
+						[1] = {
+							[1] = Tool,
+							[2] = Mouse.Hit.Position,
+							[3] = true
+						}
+					}
+
+					game:GetService("ReplicatedStorage").Events.SpellCast:FireServer(unpack(args))
+					
+					wait()
+
+					local args2 = {
+						[1] = {
+							[1] = Tool,
+							[2] = Mouse.Hit.Position
+						}
+					}
+
+					game:GetService("ReplicatedStorage").Events.SpellCast:FireServer(unpack(args2))
+				end
+				
+				while true do
+					if not Settings.Active then break end
+					pcall(function()
+						if Respawning then return end
+						if Settings.AutoFarm then
+							if Settings.AutoSpin then
+								if game.ReplicatedStorage.Data[Player.UserId].Spins.Value > 0 then
+									Spin()
+									return
+								end
+							end
+							if Player.Character then
+								if game:GetService("ReplicatedStorage").Statuses[Player.Name].Resources.Mana.Value <= 30 then
+									Respawn()
+									return
+								end
+								local offcd = false
+								for i,v in pairs(Player.Backpack:GetChildren()) do
+									if game.ReplicatedStorage.Statuses[Player.Name].Cooldowns:FindFirstChild(v.Name) or not v:IsA("Tool") then continue end
+									AttemptSkill(v)
+									offcd = true
+									break
+								end
+							else
+								Respawn()
+								return
+							end
+						else
+							if Settings.AutoSpin then
+								if game.ReplicatedStorage.Data[Player.UserId].Spins.Value > 0 then
+									Spin()
+									return
+								end
+							end
+						end
+					end)
+					wait()
+				end
+			end;
+		};
+	};
 
 	["Miners Haven"] = {
 		["Places"] = {
@@ -1592,7 +1871,7 @@ if not shared[hubname] then
 		task.spawn(pcall,GameUI,game.GameId..".txt")
 		UICreator:Notify(newUI,"UI Loaded (Game)",nil,2,654933978)
 		if not shared[hubname] then
-			syn.queue_on_teleport([[loadstring(game:HttpGet("https://raw.githubusercontent.com/EnderBirt/bigbigbig/main/Sonic%20UI.lua",true))()]])
+			syn.queue_on_teleport(tpcode)
 		end
 		shared[hubname] = true
 	end
@@ -1600,7 +1879,7 @@ if not shared[hubname] then
 		task.spawn(pcall,Place,game.PlaceId..".txt")
 		UICreator:Notify(newUI,"UI Loaded",nil,2,654933978)
 		if not shared[hubname] then
-			syn.queue_on_teleport([[loadstring(game:HttpGet("https://raw.githubusercontent.com/EnderBirt/bigbigbig/main/Sonic%20UI.lua",true))()]])
+			syn.queue_on_teleport(tpcode)
 		end
 		shared[hubname] = true
 	else
