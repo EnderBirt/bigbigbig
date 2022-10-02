@@ -1,5 +1,8 @@
 repeat wait() until game:IsLoaded()
 
+local Player = game:GetService("Players").LocalPlayer
+Player:WaitForChild("PlayerGui")
+
 _, Protected_by_MoonSecV2, Discord = 'discord.gg/gQEH2uZxUk'
 
 
